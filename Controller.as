@@ -4,7 +4,8 @@
 	import flash.display.Sprite
 	//
 	// own
-	import com.kiko.display.Rect;
+	import com.kiko.display.*;
+	import com.kiko.text.*;
 	//
 	public class Controller extends Sprite
 	{
@@ -20,6 +21,13 @@
 			addChild(rect);
 			rect.x = 200;
 			rect.y = 200;
+		}
+		
+		private function createTextField():void{
+			var tf:CustomTextField = new CustomTextField();
+			addChild(tf);
+			tf.text = "test text";
+			tf.appendText("more text");
 		}
 	}//end-class
 }//end-pack
