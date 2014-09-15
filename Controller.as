@@ -21,6 +21,7 @@
 			addChild(rect);
 			rect.x = 200;
 			rect.y = 200;
+			trace("");
 		}
 		
 		private function createTextField():void{
