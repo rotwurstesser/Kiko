@@ -14,6 +14,7 @@
 		//
 		public function Controller():void{
 			createRectTest();
+			createToggleButtonTest();
 		}
 		
 		private function createRectTest():void {
@@ -29,6 +30,11 @@
 			addChild(tf);
 			tf.text = "test text";
 			tf.appendText("more text");
+		}
+		private function createToggleButtonTest():void{
+			var tb:ToggleButton = new ToggleButton("Name");
+			addChild(tb);
+			
 		}
 	}//end-class
 }//end-pack
