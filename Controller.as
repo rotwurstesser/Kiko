@@ -34,7 +34,19 @@
 		private function createToggleButtonTest():void{
 			var tb:ToggleButton = new ToggleButton("Name");
 			addChild(tb);
-			
+			// functions
+			tb.toggle();
+			tb.toggleOn();
+			tb.toggleOff();
+			// events
+			tb.addEventListener(MouseEvent.TOGGLE_OFF, onToggleOf);
+			tb.addEventListener(MouseEvent.TOGGLE_ON, onToggleOn);
+			// gettters setters
+			tb.text = "New Name";
+			tb.width = 100;
+			tb.height = 50;
+			if(tb.on){}
+			if(tb.off){}
 		}
 	}//end-class
 }//end-pack
