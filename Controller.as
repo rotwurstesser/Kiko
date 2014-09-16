@@ -16,7 +16,7 @@
 			createRectTest();
 			createToggleButtonTest();
 		}
-		
+		// done
 		private function createRectTest():void {
 			var rect:Rect = new Rect(100, 100, 0xff00aa);
 			addChild(rect);
@@ -24,13 +24,14 @@
 			rect.y = 200;
 			trace("");
 		}
-		
-		private function createTextField():void{
+		// todo
+		private function createCustomTextfield():void{
 			var tf:CustomTextField = new CustomTextField();
 			addChild(tf);
 			tf.text = "test text";
 			tf.appendText("more text");
 		}
+		// todo
 		private function createToggleButtonTest():void{
 			var tb:ToggleButton = new ToggleButton("Name");
 			addChild(tb);
@@ -48,5 +49,20 @@
 			if(tb.on){}
 			if(tb.off){}
 		}
+		// todo
+		private static function Math2():void{
+			function radToDeg(rad:Number):Number{
+				return rad*180/Math.PI;
+			}
+			function degToRad(deg:Number):Number{
+				return deg/180*Math.PI;
+			}
+			function random(min:Number = 0, max:Number = 1):Number{
+				return Math.random()*(min + max) -max;
+			}
+		}
+		
+	
+		
 	}//end-class
 }//end-pack
