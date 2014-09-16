@@ -61,6 +61,14 @@
 				return Math.random()*(min + max) -max;
 			}
 		}
+		// todo
+		private function keyboardKeys() {
+			
+		}
+		// todo
+		private function selfRemovingEventListeners() {
+			
+		}
 		
 	
 		
