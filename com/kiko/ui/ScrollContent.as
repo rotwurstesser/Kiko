@@ -1,4 +1,4 @@
-package com.kiko.ui
+﻿package com.kiko.ui
 {
 	/**
 	 * ScrollContent - Version 1.14 (~)

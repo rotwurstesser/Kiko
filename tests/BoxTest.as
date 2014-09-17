@@ -22,22 +22,23 @@
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, toStage);
 			trace("test inited");
-			createBox();
+			
+			for (var i:uint = 0; i < 10; i++) {
+				createBox();
+			}
+			//createBox();
 		}
 		
 		
 		
 		private function createBox():void {
 			
-			for (var i:uint = 0; i < 10; i++) {
-				var box:Box = new Box();
-				addChild(box);
-				box.x = Math.random()* 500;
-				box.y = Math.random()* 500;
-				//box.y = 100;
-			}
-			
-			
+			var box:Box = new Box();
+			addChild(box);
+			box.x = Math.random()* 500;
+			box.y = Math.random()* 500;
+			//box.y = 100;
+
 		}
 	}//end-class
 }//end-pack
