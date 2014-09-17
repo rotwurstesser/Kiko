@@ -9,7 +9,7 @@ package com.kiko.ui
 	import flash.events.Event;
 	//
 	// own
-	import com.pascal.display.Rect;
+	import com.kiko.display.Rect;
 	//
 	public class ScrollContent extends Sprite
 	{
