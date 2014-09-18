@@ -24,8 +24,8 @@
 	public class ScrollElement extends Sprite
 	{
 		// graphics
-		private var scrollBackground:Sprite;
-		private var scroller:Sprite;
+		public var scrollBackground:Sprite;
+		public var scroller:Sprite;
 		//
 		// data
 		private var _scrollMode:String;
@@ -76,20 +76,20 @@
 		//events
 		private function scrollerMouseUp(e:MouseEvent):void {
 			scroller.stopDrag();
-			scroller.alpha = 1;
+			//scroller.alpha = 1;
 		}
 		private function scrollerMouseDown(e:MouseEvent):void {
 			scroller.startDrag(false, new Rectangle(0, 0, scrollBackgroundWidth - scrollerWidth, scrollBackgroundHeight - scrollerHeight) );
-			scroller.alpha = 0.7;
+			//scroller.alpha = 0.7;
 		}
 		private function mouseWheel(e:MouseEvent):void {
 			if( isFocused ) this.scrollerY -= e.delta * 5;
 		}
 		private function scrollerMouseOut(e:MouseEvent):void {
-			scroller.alpha = 1;
+			//scroller.alpha = 1;
 		}
 		private function scrollerMouseOver(e:MouseEvent):void {
-			scroller.alpha = 0.7;
+			//scroller.alpha = 0.7;
 		}
 		
 		//publics

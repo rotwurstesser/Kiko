@@ -62,7 +62,8 @@
 			addTextButton("New Super", 0x656565, 0xcccccc, 0x656565);
 			addTextButton("New Super", 0x656565, 0xcccccc, 0x656565);
 			addTextButton("New Super", 0x656565, 0xcccccc, 0x656565);
-			addTextButton("New Super", 0x656565, 0xcccccc, 0x656565);
+			var c = Math.random() * 0xffffff;
+			addTextButton("New Super", c, c, c);
 			addTextButton("Test Alert Button", 0xff3443, 0xff3443, 0xff3443);
 			addTextButton("Notice", 0x4a55ff, 0x4a55ff, 0x4a55ff);
 
@@ -79,6 +80,16 @@
 			// dropshadow
 			this.filters = [new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3)];
 			
+			
+			var scroller_x:ScrollElement = new ScrollElement(stage, 0xffffff,0xcccccc);
+			addChild(scroller_x);
+			scroller_x.scrollBackgroundWidth = 10;
+			scroller_x.scrollBackgroundHeight = bg.height - grabber.height;
+			scroller_x.x = bg.width - scroller_x.width - 2;
+			scroller_x.y = 36;
+			scroller_x.scrollerWidth = 10;
+			scroller_x.scrollBackground.alpha = 0;
+			scroller_x.scroller.alpha = 0.5;
 			
 			/**
 			 * todo
