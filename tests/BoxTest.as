@@ -24,9 +24,9 @@
 			trace("test inited");
 			
 			for (var i:uint = 0; i < 10; i++) {
-				createBox();
+				//createBox();
 			}
-			//createBox();
+			createBox();
 		}
 		
 		
