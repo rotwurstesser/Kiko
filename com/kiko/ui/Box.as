@@ -21,8 +21,13 @@
 		private var bg:Sprite;
 		private var grabber:Grabber;
 		//
+		// flags
+		private var closed:Boolean;
+		//
 		// data
 		private var contentElements:Number = 0;
+		private var contentHeight:Number = 45;
+		private var elementGap:Number = 10;
 		//
 		//
 		public function Box():void{
@@ -58,23 +63,31 @@
 			
 			var close:IconButton = addGrabberButton("resources/swf/cross_icon.swf");
 			var minimize:IconButton = addGrabberButton("resources/swf/minimize_icon.swf");
+			addGrabberButton("resources/swf/invisible_icon.swf");
 			
-			addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
+			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
+			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
+			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			var c = Math.random() * 0xffffff;
 			//addTextButton("New Super", c, c, c);
 			//addTextButton("Test Alert Button", 0xff3443, 0xff3443, 0xff3443);
 			//addTextButton("Notice", 0x4a55ff, 0x4a55ff, 0x4a55ff);
+			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
+			addSlider("Banana Count", 0, 100);
+			addSlider("Drink Count", 50, 80);
+			addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
+			addTextButton("New Super", 0xff3443, 0xff3443, 0xff3443);
 			addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			addToggleButton("Toggle Ssdklfjslfkjsdf kls ", 0xd5ffa5);
+			addToggleButton("New", 0xff00aa);
+			
+			
+		
 
 
 			
 			minimize.addEventListener(MouseEvent.CLICK, function() {
-				bg.visible = minimize.toggleOn ? false : true;
+				bg.visible = closed ? true : false;
+				closed = !closed;
 			});
 			
 			var me = this;
@@ -88,6 +101,7 @@
 			
 			var scroller_x:ScrollElement = new ScrollElement(stage, 0xffffff,0xcccccc);
 			addChild(scroller_x);
+			scroller_x.alpha = 0;
 			scroller_x.scrollBackgroundWidth = 10;
 			scroller_x.scrollBackgroundHeight = bg.height - grabber.height;
 			scroller_x.x = bg.width - scroller_x.width - 2;
@@ -140,16 +154,27 @@
 			var tb:TextButton = new TextButton(text, 180, 25, textColor, borderColor, hoverColor );
 			addChild(tb);
 			tb.x = 10;
-			tb.y = 45 + contentElements * 30;
+			tb.y = contentHeight;
 			contentElements ++;
+			contentHeight += tb.height + elementGap;
 		}
 		
 		public function addToggleButton(text, toggleColor) {
 			var tg:ToggleButton = new ToggleButton(text);
 			addChild(tg);
 			tg.x = 10;
-			tg.y = 45 + contentElements * 30;
+			tg.y = contentHeight;
 			contentElements ++;
+			contentHeight += tg.height + elementGap;
+		}
+		
+		public function addSlider(text, minVal, maxVal) {
+			var s:Slider = new Slider(stage, text, minVal, maxVal, 180);
+			addChild(s);
+			s.x = 10;
+			s.y = contentHeight;
+			contentElements ++;
+			contentHeight += s.height + elementGap;
 		}
 		
 	}//end-class

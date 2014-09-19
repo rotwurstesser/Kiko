@@ -26,7 +26,7 @@ package com.kiko.ui.buttons
 		private var active_icon:Image;
 		//
 		//
-		public function ToggleButton(text:String, toggleColor:uint = 0xd5ffa5):void
+		public function ToggleButton(text:String, toggleColor:uint = 0x8ee800):void
 		{
 			toggler = new Sprite();
 			toggler.graphics.beginFill(0x000000, 0);
@@ -87,6 +87,7 @@ package com.kiko.ui.buttons
 			hit.addEventListener(MouseEvent.CLICK, function(e:MouseEvent) {
 				toggleOn = !toggleOn;
 				active_icon.visible = toggleOn ? true : false;
+				
 			});
 			
 		}
