@@ -132,7 +132,7 @@
 			var wratio = scroller.width / scrollBackground.width;
 			
 			// min width
-			if ( val <= 10) val = 10;
+			if ( val <= 5) val = 5;
 			
 			// set bg width
 			scrollBackground.width = val;
@@ -154,7 +154,7 @@
 			var hratio = scroller.height / scrollBackground.height;
 			
 			// min height
-			if ( val <= 10) val = 10;
+			if ( val <= 5) val = 5;
 			
 			// set bg height
 			scrollBackground.height = val;

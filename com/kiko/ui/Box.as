@@ -9,6 +9,9 @@
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
+	import flash.text.TextFieldAutoSize;
 	//
 	// own
 	import com.kiko.display.*;
@@ -92,24 +95,45 @@
 			scroller_x.scroller.alpha = 0.5;
 			scroller_x.scrollMode = ScrollElement.HORIZONTAL_SCROLL;
 			
+			// scroll content
 			content = new Sprite();
-			
 			scrollContent = new ScrollContent(content, new <ScrollElement>[scroller_y, scroller_x]);
 			addChild(scrollContent);
 			scrollContent.y = 45;
 			scrollContent.displayWidth = bg.width;
 			scrollContent.displayHeight = bg.height - 45;
 			
+			var format:TextFormat = new TextFormat("Arial", 12, 0x999999);
+			var title:TextField = new TextField();
+			title.text = "Super Viewer";
+			title.setTextFormat(format);
+			title.autoSize = TextFieldAutoSize.RIGHT;
+			title.mouseEnabled = false;
+			addChild(title);
+			title.x = bg.width - title.width - 15;
+			title.y = grabber.height / 2 - title.height / 2;
+			
+			
+			addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
+				scroller_y.scrollerY -= e.delta*2.5;
+			});
+			
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
+			for (var i:uint = 0; i < 15; i++){
 			var c = Math.random() * 0xffffff;
 			//addTextButton("New Super", c, c, c);
-			//addTextButton("Test Alert Button", 0xff3443, 0xff3443, 0xff3443);
+			addSlider("Drink Count", 50, Math.random()*500, 50);
+			}
+			addWhiteSpace();
 			//addTextButton("Notice", 0x4a55ff, 0x4a55ff, 0x4a55ff);
 			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			addSlider("Banana Count", 0, 100, 10);
+			/*addSlider("Banana Count", 0, 9876, 10);
+			addSlider("Drink Count", 50, 200, 50);
 			addSlider("Drink Count", 50, 80, 50);
+			addSlider("Drink Count", 50, 80, 50);
+			addSlider("Drink Count", 50, 800, 50);
 			addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			addTextButton("New Super", 0xff3443, 0xff3443, 0xff3443);
 			addToggleButton("Toggle Checkbox", 0xd5ffa5);
@@ -117,17 +141,28 @@
 			addToggleButton("New", 0xff00aa);
 			addToggleButton("New", 0xff00aa);
 			addToggleButton("New", 0xff00aa);
+			addSlider("Drink Count", 50, 80, 50);
+			addToggleButton("Toggle Checkbox", 0xd5ffa5);*/
 			//addSlider("Drink Count", 50, 80);
 			//addSlider("Drink Count", 50, 80);
-			
 			
 		
-
-
-			
 			minimize.addEventListener(MouseEvent.CLICK, function() {
 				bg.visible = closed ? true : false;
 				closed = !closed;
+			});
+			
+			// dropshadow
+			this.filters = [new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3)];
+			
+			this.setChildIndex(scroller_x, numChildren - 1);
+			this.setChildIndex(scroller_y, numChildren - 1);
+			
+		}
+		
+		private function eventListeners():void {
+			stage.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
+				stopDrag();
 			});
 			
 			var me = this;
@@ -135,28 +170,7 @@
 				parent.setChildIndex(me, parent.numChildren - 1);
 			});
 			
-			// dropshadow
-			this.filters = [new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3)];
 			
-			
-			
-			this.setChildIndex(scroller_x, numChildren - 1);
-			this.setChildIndex(scroller_y, numChildren - 1);
-			
-			/**
-			 * todo
-			 * scrollcontent, scrollbars, resizers
-			 */
-			/*
-			var cb:ScrollContent = new ScrollContent(new Rect(20, 20, 0xff00aa), new Vector.<ScrollElement>(new ScrollElement(stage),new ScrollElement(stage)) );
-			addChild(cb);
-			*/
-		}
-		
-		private function eventListeners():void {
-			stage.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
-				stopDrag();
-			});
 		}
 		
 		
@@ -208,6 +222,16 @@
 			s.y = contentHeight;
 			contentElements ++;
 			contentHeight += s.height + elementGap;
+		}
+		
+		public function addWhiteSpace():void {
+			var w:Sprite = new Sprite();
+			w.graphics.beginFill(0xff00aa, 0);
+			w.graphics.drawRect(0, 0, 100, 25);
+			content.addChild(w);
+			w.y = contentHeight;
+			contentElements ++;
+			contentHeight += w.height + elementGap;
 		}
 		
 	}//end-class

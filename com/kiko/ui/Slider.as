@@ -1,7 +1,7 @@
 package com.kiko.ui
 {
 	/**
-	 * Version 1.02
+	 * Version 1.03
 	 */
 	// adobe
 	import com.kiko.display.Image;
@@ -30,7 +30,7 @@ package com.kiko.ui
 		private var grabber:Sprite;
 		//
 		//
-		public function Slider(stage:Stage, text:String, minVal:int, maxVal:int, width:Number ):void
+		public function Slider(stage:Stage, text:String, minVal:int, maxVal:int, startVal:int, width:uint ):void
 		{
 			
 			line = new Sprite();
@@ -66,7 +66,7 @@ package com.kiko.ui
 			
 			var mintf:TextField = new TextField();
 			mintf.text = String(minVal);
-			//addChild(mintf);
+			addChild(mintf);
 			mintf.setTextFormat(format);
 			mintf.background = false;
 			mintf.backgroundColor = 0xff00aa;
@@ -77,7 +77,7 @@ package com.kiko.ui
 			
 			var maxtf:TextField = new TextField();
 			maxtf.text = String(maxVal);
-			//addChild(maxtf);
+			addChild(maxtf);
 			maxtf.setTextFormat(format);
 			maxtf.background = false;
 			maxtf.backgroundColor = 0xff00aa;
@@ -95,27 +95,22 @@ package com.kiko.ui
 			grabber.graphics.drawCircle(0, 0, 8);
 			addChild(grabber);
 			grabber.y = 25;
-			grabber.x = width/2;
+			grabber.x = 8;
+			updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 			grabber.buttonMode = true;
 			var loop:Function;
 			grabber.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
 				var t:Sprite = Sprite(e.target);
-				t.startDrag(false, new Rectangle(8, 25, width-16, 0));
+				t.startDrag(false, new Rectangle(8, 25, width-15, 0));
 				t.addEventListener(Event.ENTER_FRAME, loop = function() {
-					active.graphics.clear();
-					active.graphics.lineStyle(1, 0x8ee800, 1, false, "normal", CapsStyle.SQUARE);
-					active.graphics.moveTo(0, 0);
-					active.graphics.lineTo(grabber.x, 0);
-					//value = grabber.x / line.width;
-					value = Math.ceil((grabber.x-8) / (line.width-16) * (maxVal - minVal) + minVal);
-					valuetf.text = text + ": " +String(value);
-					valuetf.setTextFormat(format2);
+					updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 				});
 				
 			});
 			stage.addEventListener(MouseEvent.MOUSE_UP, function() {
 				grabber.stopDrag();
-				if(grabber.hasEventListener(Event.ENTER_FRAME)) grabber.removeEventListener(Event.ENTER_FRAME, loop);
+				if (grabber.hasEventListener(Event.ENTER_FRAME)) grabber.removeEventListener(Event.ENTER_FRAME, loop);
+				updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 			});
 			
 			//test loop
@@ -125,6 +120,17 @@ package com.kiko.ui
 			});
 
 		}
+		// privates
+		private function updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal):void {
+			active.graphics.clear();
+			active.graphics.lineStyle(1, 0x8ee800, 1, false, "normal", CapsStyle.SQUARE);
+			active.graphics.moveTo(0, 0);
+			active.graphics.lineTo(grabber.x, 0);
+			value = Math.round((grabber.x - 8) / (line.width - 16) * (maxVal - minVal + minVal));
+			valuetf.text = text + ": " +String(value);
+			valuetf.setTextFormat(format2);
+		}
+		
 		// getters/setters
 
 		
