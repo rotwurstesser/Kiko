@@ -22,14 +22,13 @@
 		private var scrollElementReferences:Vector.<ScrollElement>;
 		//
 		//
-		public function ScrollContent(visualElement:DisplayObject, scrollElementReferences:Vector.<ScrollElement> = null, bgColor:uint = 0x00FFFF):void
+		public function ScrollContent(visualElement:DisplayObject, scrollElementReferences:Vector.<ScrollElement> = null, bgColor:uint = 0x9BFFDE):void
 		{
 			this.visualElement = visualElement;
 			this.scrollElementReferences = scrollElementReferences;
 			
-			
 			displayBackground =  new Rect(300, 300, bgColor);
-			addChild(displayBackground);
+			//addChild(displayBackground);
 			
 			displayRect = new Rect(300, 300, bgColor);
 			addChild(displayRect);
