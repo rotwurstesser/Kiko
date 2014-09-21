@@ -26,18 +26,26 @@
 			for (var i:uint = 0; i < 10; i++) {
 				//createBox();
 			}
-			createBox();
+			var b:Box = createBox();
+			b.title = "MyBox";
+			b.height = 250;
+			
+			addEventListener(Event.ENTER_FRAME, function() {
+				//b.height -= 1;
+			});
+			
 		}
 		
 		
 		
-		private function createBox():void {
+		private function createBox():Box {
 			
 			var box:Box = new Box();
 			addChild(box);
 			box.x = Math.random()* 500;
 			box.y = Math.random()* 500;
 			//box.y = 100;
+			return box;
 
 		}
 	}//end-class

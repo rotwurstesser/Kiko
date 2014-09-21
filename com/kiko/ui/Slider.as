@@ -1,4 +1,4 @@
-package com.kiko.ui
+﻿package com.kiko.ui
 {
 	/**
 	 * Version 1.03
@@ -126,7 +126,7 @@ package com.kiko.ui
 			active.graphics.lineStyle(1, 0x8ee800, 1, false, "normal", CapsStyle.SQUARE);
 			active.graphics.moveTo(0, 0);
 			active.graphics.lineTo(grabber.x, 0);
-			value = Math.round((grabber.x - 8) / (line.width - 16) * (maxVal - minVal + minVal));
+			value = Math.round((grabber.x - 8) / (line.width - 16) * (maxVal - minVal) + minVal);
 			valuetf.text = text + ": " +String(value);
 			valuetf.setTextFormat(format2);
 		}

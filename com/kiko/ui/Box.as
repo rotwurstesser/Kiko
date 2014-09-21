@@ -1,11 +1,12 @@
 ﻿package com.kiko.ui
 {
 	/**
-	 * Version 1.02
+	 * Version 1.03
 	 */
 	// adobe
 	import flash.display.Sprite;
 	import flash.display.SimpleButton;
+	import flash.display.LineScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
@@ -25,6 +26,10 @@
 		private var grabber:Grabber;
 		private var scrollContent:ScrollContent;
 		private var content:Sprite;
+		private var format:TextFormat;
+		private var title_tf:TextField;
+		private var scroller_x:ScrollElement;
+		private var scroller_y:ScrollElement;
 		//
 		// flags
 		private var closed:Boolean;
@@ -52,7 +57,7 @@
 		private function draw():void {
 			bg = new Sprite();
 			bg.graphics.beginFill(0xffffff);
-			bg.graphics.lineStyle(1, 0xdedede);
+			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE);
 			bg.graphics.drawRect(0, 0, 200, 300);
 			addChild(bg);
 			
@@ -71,7 +76,7 @@
 			addGrabberButton("resources/swf/invisible_icon.swf");
 			
 			
-			var scroller_y:ScrollElement = new ScrollElement(stage, 0xffffff,0xcccccc);
+			scroller_y = new ScrollElement(stage, 0xffffff,0xcccccc);
 			addChild(scroller_y);
 			scroller_y.alpha = 1;
 			scroller_y.scrollBackgroundWidth = 0;
@@ -83,7 +88,7 @@
 			scroller_y.scroller.alpha = 0.5;
 			scroller_y.scrollMode = ScrollElement.VERTICAL_SCROLL;
 			
-			var scroller_x:ScrollElement = new ScrollElement(stage, 0xffffff,0xcccccc);
+			scroller_x = new ScrollElement(stage, 0xffffff,0xcccccc);
 			addChild(scroller_x);
 			scroller_x.alpha = 1;
 			scroller_x.scrollBackgroundWidth = bg.width;
@@ -99,19 +104,19 @@
 			content = new Sprite();
 			scrollContent = new ScrollContent(content, new <ScrollElement>[scroller_y, scroller_x]);
 			addChild(scrollContent);
-			scrollContent.y = 45;
+			scrollContent.y = grabber.height+5;
 			scrollContent.displayWidth = bg.width;
-			scrollContent.displayHeight = bg.height - 45;
+			scrollContent.displayHeight = bg.height - grabber.height-10;
 			
-			var format:TextFormat = new TextFormat("Arial", 12, 0x999999);
-			var title:TextField = new TextField();
-			title.text = "Super Viewer";
-			title.setTextFormat(format);
-			title.autoSize = TextFieldAutoSize.RIGHT;
-			title.mouseEnabled = false;
-			addChild(title);
-			title.x = bg.width - title.width - 15;
-			title.y = grabber.height / 2 - title.height / 2;
+			format = new TextFormat("Arial", 12, 0x999999);
+			title_tf = new TextField();
+			title_tf.text = "Super Viewer";
+			title_tf.setTextFormat(format);
+			title_tf.autoSize = TextFieldAutoSize.RIGHT;
+			title_tf.mouseEnabled = false;
+			addChild(title_tf);
+			title_tf.x = bg.width - title_tf.width - 15;
+			title_tf.y = grabber.height / 2 - title_tf.height / 2;
 			
 			
 			addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
@@ -121,10 +126,11 @@
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			for (var i:uint = 0; i < 15; i++){
+			for (var i:uint = 0; i < 4; i++){
 			var c = Math.random() * 0xffffff;
 			//addTextButton("New Super", c, c, c);
-			addSlider("Drink Count", 50, Math.random()*500, 50);
+			addSlider("Drink Count",  Math.random() * 10, Math.random() * 80000, 50);
+			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
 			}
 			addWhiteSpace();
 			//addTextButton("Notice", 0x4a55ff, 0x4a55ff, 0x4a55ff);
@@ -149,17 +155,21 @@
 		
 			minimize.addEventListener(MouseEvent.CLICK, function() {
 				bg.visible = closed ? true : false;
+				content.visible = closed ? true : false;
+				scroller_y.visible = false;
 				closed = !closed;
 			});
 			
 			// dropshadow
 			this.filters = [new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3)];
 			
+			// display list
 			this.setChildIndex(scroller_x, numChildren - 1);
 			this.setChildIndex(scroller_y, numChildren - 1);
 			
 		}
 		
+		// privates
 		private function eventListeners():void {
 			stage.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
 				stopDrag();
@@ -170,7 +180,12 @@
 				parent.setChildIndex(me, parent.numChildren - 1);
 			});
 			
-			
+			addEventListener(Event.ENTER_FRAME, function() {
+				if(!closed) {
+				scroller_x.visible = scroller_x.scrollerWidth >= scroller_x.scrollBackgroundWidth ? false : true;
+				scroller_y.visible = scroller_y.scrollerHeight >= scroller_y.scrollBackgroundHeight ? false : true;
+				}
+			});
 		}
 		
 		
@@ -178,10 +193,11 @@
 		public function addGrabberButton(icoPath:String):IconButton {
 			var but:IconButton = new IconButton(icoPath, function() {
 				addChild(but);
-				//but.y = grabber.height / 2 - but.height / 2;
+				but.x = grabber.contentWidth;
+				grabber.contentWidth += but.width + 0;
 			}, new Rect(25,grabber.height,0xff00aa),true);
 			
-			but.x = 8 + grabber.numButtons * 25;
+			
 			grabber.numButtons++;
 			//
 			but.buttonMode = true;
@@ -193,10 +209,7 @@
 				but.alpha = 1;
 			});
 			return but;
-
-			//but.y = 
 		}
-		
 		public function addTextButton(text, textColor, borderColor, hoverColor ):void {
 			var tb:TextButton = new TextButton(text, 180, 25, textColor, borderColor, hoverColor );
 			content.addChild(tb);
@@ -205,7 +218,6 @@
 			contentElements ++;
 			contentHeight += tb.height + elementGap;
 		}
-		
 		public function addToggleButton(text, toggleColor) {
 			var tg:ToggleButton = new ToggleButton(text);
 			content.addChild(tg);
@@ -214,7 +226,6 @@
 			contentElements ++;
 			contentHeight += tg.height + elementGap;
 		}
-		
 		public function addSlider(text, minVal, maxVal, startVal) {
 			var s:Slider = new Slider(stage, text, minVal, maxVal, startVal, 180);
 			content.addChild(s);
@@ -223,7 +234,6 @@
 			contentElements ++;
 			contentHeight += s.height + elementGap;
 		}
-		
 		public function addWhiteSpace():void {
 			var w:Sprite = new Sprite();
 			w.graphics.beginFill(0xff00aa, 0);
@@ -232,6 +242,37 @@
 			w.y = contentHeight;
 			contentElements ++;
 			contentHeight += w.height + elementGap;
+		}
+		
+		// getters  setters
+		public function set title(value:String):void {
+			this.title_tf.text = value;
+			title_tf.setTextFormat(format);
+		}
+		public function get title():String {
+			return this.title_tf.text;
+		}
+		
+		override public function get width () : Number {
+			return bg.width;
+		}
+		override public function set width (value:Number) : void {
+			bg.width = value;
+			grabber.width = value;
+			title_tf.x = value - title_tf.width - 15;
+			scrollContent.displayWidth = value;
+			scroller_x.scrollBackgroundWidth = value;
+			scroller_x.scrollerXToMin();
+			scroller_y.x = value - scroller_y.width;
+		}
+		
+		override public function get height () : Number {
+			return bg.height;
+		}
+		override public function set height (value:Number) : void {
+			bg.height = value;
+			scrollContent.displayHeight = value - grabber.height -10;
+			scroller_y.scrollBackgroundHeight = value - grabber.height-10;
 		}
 		
 	}//end-class

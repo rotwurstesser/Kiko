@@ -9,12 +9,13 @@ package com.kiko.ui
 	{
 		// data
 		public var numButtons:uint = 0;
+		public var contentWidth:Number = 8;
+		public var stack:Array;
 		//
 		//
 		public function Grabber():void
 		{
-			trace("Grabber  ---  inited");
-			
+			stack = new Array();
 		}
 	}//end-class
 }//end-pack
