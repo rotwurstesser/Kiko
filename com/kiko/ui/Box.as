@@ -7,6 +7,7 @@
 	import flash.display.Sprite;
 	import flash.display.SimpleButton;
 	import flash.display.LineScaleMode;
+	import flash.display.JointStyle;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
@@ -57,14 +58,14 @@
 		private function draw():void {
 			bg = new Sprite();
 			bg.graphics.beginFill(0xffffff);
-			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE);
+			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE, null);
 			bg.graphics.drawRect(0, 0, 200, 300);
 			addChild(bg);
 			
 			grabber = new Grabber();
 			grabber.numButtons = 0;
 			grabber.graphics.beginFill(0xffffff);
-			grabber.graphics.lineStyle(1, 0xdedede);
+			grabber.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE );
 			grabber.graphics.drawRect(0, 0, 200, 35);
 			addChild(grabber);
 			grabber.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
@@ -94,7 +95,7 @@
 			scroller_x.scrollBackgroundWidth = bg.width;
 			scroller_x.scrollBackgroundHeight = 5;
 			scroller_x.x = 0;
-			scroller_x.y = this.height - scroller_x.height;
+			scroller_x.y = this.height - scroller_x.scrollBackgroundHeight;
 			scroller_x.scrollerHeight = 5;
 			scroller_x.scrollBackground.alpha = 0;
 			scroller_x.scroller.alpha = 0.5;
@@ -156,7 +157,8 @@
 			minimize.addEventListener(MouseEvent.CLICK, function() {
 				bg.visible = closed ? true : false;
 				content.visible = closed ? true : false;
-				scroller_y.visible = false;
+				scroller_y.visible = closed ? true : false;
+				scroller_x.visible = closed ? true : false;
 				closed = !closed;
 			});
 			
@@ -231,6 +233,7 @@
 			content.addChild(s);
 			s.x = 10;
 			s.y = contentHeight;
+			s.width = this.width - 20;
 			contentElements ++;
 			contentHeight += s.height + elementGap;
 		}
@@ -272,7 +275,9 @@
 		override public function set height (value:Number) : void {
 			bg.height = value;
 			scrollContent.displayHeight = value - grabber.height -10;
-			scroller_y.scrollBackgroundHeight = value - grabber.height-10;
+			
+			scroller_y.scrollBackgroundHeight = value - grabber.height - 10;
+			scroller_x.y = bg.height - scroller_x.scrollBackgroundHeight;
 		}
 		
 	}//end-class

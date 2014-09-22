@@ -29,6 +29,7 @@
 			var b:Box = createBox();
 			b.title = "MyBox";
 			b.height = 250;
+			//b.width = 350;
 			
 			addEventListener(Event.ENTER_FRAME, function() {
 				//b.height -= 1;

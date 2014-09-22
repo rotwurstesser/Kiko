@@ -9,6 +9,7 @@
 	import flash.display.Sprite;
 	import flash.display.CapsStyle;
 	import flash.display.Stage;
+	import flash.display.LineScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -28,13 +29,16 @@
 		private var line:Sprite;
 		private var active:Sprite;
 		private var grabber:Sprite;
+		private var mintf:TextField;
+		private var maxtf:TextField;
+		private var dragRect:Rectangle;
 		//
 		//
 		public function Slider(stage:Stage, text:String, minVal:int, maxVal:int, startVal:int, width:uint ):void
 		{
 			
 			line = new Sprite();
-			line.graphics.lineStyle(1, 0x999999, 1, false, "normal", CapsStyle.SQUARE);
+			line.graphics.lineStyle(1, 0x999999, 1, false, LineScaleMode.NONE, CapsStyle.SQUARE);
 			line.graphics.moveTo(0, 0);
 			line.graphics.lineTo(width, 0);
 			addChild(line);
@@ -42,7 +46,7 @@
 			line.y = 25;
 			
 			active = new Sprite();
-			active.graphics.lineStyle(1, 0x8ee800, 1, false, "normal", CapsStyle.SQUARE);
+			active.graphics.lineStyle(1, 0x8ee800, 1, false, LineScaleMode.NONE, CapsStyle.SQUARE);
 			active.graphics.moveTo(0, 0);
 			active.graphics.lineTo(width / 2, 0);
 			addChild(active);
@@ -64,7 +68,7 @@
 			valuetf.y = 0;
 
 			
-			var mintf:TextField = new TextField();
+			mintf = new TextField();
 			mintf.text = String(minVal);
 			addChild(mintf);
 			mintf.setTextFormat(format);
@@ -75,7 +79,7 @@
 			mintf.mouseEnabled = false;
 			mintf.y = 32;
 			
-			var maxtf:TextField = new TextField();
+			maxtf = new TextField();
 			maxtf.text = String(maxVal);
 			addChild(maxtf);
 			maxtf.setTextFormat(format);
@@ -98,10 +102,11 @@
 			grabber.x = 8;
 			updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 			grabber.buttonMode = true;
+			dragRect = new Rectangle(8, 25, width - 15, 0);
 			var loop:Function;
 			grabber.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
 				var t:Sprite = Sprite(e.target);
-				t.startDrag(false, new Rectangle(8, 25, width-15, 0));
+				t.startDrag(false, dragRect);
 				t.addEventListener(Event.ENTER_FRAME, loop = function() {
 					updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 				});
@@ -132,6 +137,11 @@
 		}
 		
 		// getters/setters
+		override public function set width (value:Number) : void {
+			line.width = value;
+			maxtf.x = line.width - maxtf.width;
+			dragRect = new Rectangle(8, 25, line.width - 15, 0);
+		}
 
 		
 	}//end-class
