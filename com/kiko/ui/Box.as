@@ -124,13 +124,20 @@
 				scroller_y.scrollerY -= e.delta*2.5;
 			});
 			
+			/* colors
+			 * blue: 0x4a55ff
+			 * 
+			 * 
+			 * */
+			
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
 			for (var i:uint = 0; i < 4; i++){
 			var c = Math.random() * 0xffffff;
-			//addTextButton("New Super", c, c, c);
-			addSlider("Drink Count",  Math.random() * 10, Math.random() * 80000, 50);
+			var d = 0x4a55ff;
+			addTextButton("New Super", d, d, d).width = 400;
+			//addSlider("Drink Count",  Math.random() * 10, Math.random() * 80000, 50);
 			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
 			}
 			addWhiteSpace();
@@ -212,23 +219,25 @@
 			});
 			return but;
 		}
-		public function addTextButton(text, textColor, borderColor, hoverColor ):void {
+		public function addTextButton(text, textColor, borderColor, hoverColor ):TextButton {
 			var tb:TextButton = new TextButton(text, 180, 25, textColor, borderColor, hoverColor );
 			content.addChild(tb);
 			tb.x = 10;
-			tb.y = contentHeight;
+			tb.y = contentHeight+1;
 			contentElements ++;
 			contentHeight += tb.height + elementGap;
+			return tb;
 		}
-		public function addToggleButton(text, toggleColor) {
+		public function addToggleButton(text, toggleColor):ToggleButton {
 			var tg:ToggleButton = new ToggleButton(text);
 			content.addChild(tg);
 			tg.x = 10;
 			tg.y = contentHeight;
 			contentElements ++;
 			contentHeight += tg.height + elementGap;
+			return tg;
 		}
-		public function addSlider(text, minVal, maxVal, startVal) {
+		public function addSlider(text, minVal, maxVal, startVal):Slider {
 			var s:Slider = new Slider(stage, text, minVal, maxVal, startVal, 180);
 			content.addChild(s);
 			s.x = 10;
@@ -236,6 +245,7 @@
 			s.width = this.width - 20;
 			contentElements ++;
 			contentHeight += s.height + elementGap;
+			return s;
 		}
 		public function addWhiteSpace():void {
 			var w:Sprite = new Sprite();
