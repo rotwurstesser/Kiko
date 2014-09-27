@@ -2,6 +2,12 @@
 {
 	/**
 	 * Version 1.03
+	 * 
+	 * 
+	 * todo
+	 * - alle listeners mit weakReference erstellen
+	 * - korrekte Anordung der grabberButtons
+	 * - schnelle dispose funktion
 	 */
 	// adobe
 	import flash.display.Sprite;
@@ -72,6 +78,7 @@
 				startDrag();
 			});
 			
+			// grabber buttons
 			var close:IconButton = addGrabberButton("resources/swf/cross_icon.swf");
 			var minimize:IconButton = addGrabberButton("resources/swf/minimize_icon.swf");
 			addGrabberButton("resources/swf/invisible_icon.swf");
@@ -136,7 +143,7 @@
 			for (var i:uint = 0; i < 4; i++){
 			var c = Math.random() * 0xffffff;
 			var d = 0x4a55ff;
-			addTextButton("New Super", d, d, d).width = 400;
+			addTextButton("1", d, d, d).width = 250;
 			//addSlider("Drink Count",  Math.random() * 10, Math.random() * 80000, 50);
 			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
 			}
@@ -167,6 +174,11 @@
 				scroller_y.visible = closed ? true : false;
 				scroller_x.visible = closed ? true : false;
 				closed = !closed;
+			});
+			
+			var me:Box = this;
+			close.addEventListener(MouseEvent.CLICK, function() { 
+				me.parent.removeChild(me);
 			});
 			
 			// dropshadow
@@ -272,11 +284,12 @@
 		override public function set width (value:Number) : void {
 			bg.width = value;
 			grabber.width = value;
-			title_tf.x = value - title_tf.width - 15;
+			title_tf.x = value - title_tf.width;
 			scrollContent.displayWidth = value;
 			scroller_x.scrollBackgroundWidth = value;
 			scroller_x.scrollerXToMin();
 			scroller_y.x = value - scroller_y.width;
+			trace("k");	
 		}
 		
 		override public function get height () : Number {

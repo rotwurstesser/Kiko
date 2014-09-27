@@ -26,6 +26,7 @@ package com.kiko.ui.buttons
 		// graphics
 		private var bg:Sprite;
 		private var hit:Rect;
+		private var tf:TextField;
 		//
 		//
 		public function TextButton(text:String, width:Number, height:Number = 25, textColor:uint = 0x656565, borderColor:uint = 0xcccccc, hoverColor:uint = 0x656565):void
@@ -41,7 +42,7 @@ package com.kiko.ui.buttons
 			addChild(bg);
 			
 			var format:TextFormat = new TextFormat("Arial", 12, textColor);
-			var tf:TextField = new TextField();
+			tf = new TextField();
 			tf.text = text;
 			addChild(tf);
 			tf.setTextFormat(format);
@@ -83,6 +84,7 @@ package com.kiko.ui.buttons
 			return bg.width;
 		}
 		override public function set width (value:Number) : void {
+			if (value < tf.x + tf.width) value = tf.x*2 + tf.width;
 			bg.graphics.clear();
 			btnwidth = value;
 			bg.graphics.lineStyle(1, borderColor, 1, true, LineScaleMode.NONE );
