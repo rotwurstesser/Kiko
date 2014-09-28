@@ -82,6 +82,9 @@
 			var close:IconButton = addGrabberButton("resources/swf/cross_icon.swf");
 			var minimize:IconButton = addGrabberButton("resources/swf/minimize_icon.swf");
 			addGrabberButton("resources/swf/invisible_icon.swf");
+			//addGrabberButton("resources/swf/more_icon.swf");
+			addGrabberButton("resources/swf/test_icon.swf");
+			
 			
 			
 			scroller_y = new ScrollElement(stage, 0xffffff,0xcccccc);
@@ -143,7 +146,9 @@
 			for (var i:uint = 0; i < 4; i++){
 			var c = Math.random() * 0xffffff;
 			var d = 0x4a55ff;
-			addTextButton("1", d, d, d).width = 250;
+			var e = 0xff3443;
+			var active = e;
+			addTextButton("Alert Button", active, active, active).width = 150;
 			//addSlider("Drink Count",  Math.random() * 10, Math.random() * 80000, 50);
 			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
 			}

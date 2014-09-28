@@ -38,7 +38,7 @@ package com.kiko.ui.buttons
 					bg = new Rect(ico.width, ico.height, 0x000000);
 					addChild(bg);
 					setChildIndex(bg, 0);
-					bg.alpha = 0.2;
+					bg.alpha = 0.1;
 				}
 				onComplete();
 				
