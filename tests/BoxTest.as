@@ -2,6 +2,8 @@
 {
 	// adobe
 	import com.kiko.ui.buttons.IconButton;
+	import com.kiko.ui.buttons.TextButton;
+	import com.kiko.ui.buttons.TextButton;
 	import com.kiko.ui.buttons.ToggleButton;
 	import com.kiko.ui.Slider;
 	import flash.display.Sprite
@@ -64,15 +66,18 @@
 			box.title = "MyBox";
 			box.height = 250;
 			box.width = 350;
-			box.addToggleButton("Super Toggler");
-			box.addToggleButton("Super Toggler");
-			box.addToggleButton("Super Toggler");
-			box.addToggleButton("Super Toggler");
-			var n:ToggleButton = box.addToggleButton("Super Toggler");
+			//box.addToggleButton("Super Toggler");
+			//var n:ToggleButton = box.addToggleButton("Super Toggler");
+			box.addStepper("Test Stepper: 100", 10, 100, 20, 1);
+			box.addStepper("Super Test: 24", 0, 5, 2, 1);
+			box.addTextButton("Text Button Size");
 			
-			box.addToggleButton("New Tester Toggler").addEventListener(MouseEvent.CLICK, function() {
-				trace(n.toggleOn);
-			});
+			makeFor( 0, function() {
+				box.addTextButton("Super Color", Math.random() * 0xffffff).addEventListener(MouseEvent.CLICK, function(e:MouseEvent) {
+					trace( (e.currentTarget as TextButton).borderColor );
+				} );
+			} );
+			
 			/*
 			var s:Slider = box.addSlider("New", 10, 20, 14, false);
 			box.addSlider("Test Slider", 10, 20, 7);

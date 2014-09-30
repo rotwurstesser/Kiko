@@ -21,7 +21,7 @@ package com.kiko.ui.buttons
 		// data
 		private var btnwidth:Number;
 		private var btnheight:Number;
-		private var borderColor:uint;
+		public var borderColor:uint;
 		//
 		// graphics
 		private var bg:Sprite;

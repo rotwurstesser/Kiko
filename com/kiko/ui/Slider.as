@@ -2,6 +2,8 @@
 {
 	/**
 	 * Version 1.04
+	 * todo:
+		 * kommastellige Zahlen unterstützen
 	 */
 	// adobe
 	import com.kiko.display.Image;

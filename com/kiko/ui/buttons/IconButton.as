@@ -1,7 +1,7 @@
 package com.kiko.ui.buttons
 {
 	/**
-	 * Version 1.02
+	 * Version 1.03
 	 */
 	// adobe
 	import com.kiko.display.Image;
@@ -19,20 +19,22 @@ package com.kiko.ui.buttons
 		//
 		// graphics
 		private var ico:Image;
-		//
-		//
-		public function IconButton(imgPath:String, onComplete:Function, hitTest:DisplayObject = null, centerHitTest:Boolean = false ):void
-		{
+		/**
+		 * @param	imgPath Pfad zum Icon (.swf, .jpg, .png ...)
+		 * @param	onComplete Funktion wenn fertig geladen.
+		 * @param	overlay Ein Objekt das über das Icon gelegt wird. Meistens ist es durchsichtig.
+		 * @param	centerIcon Einmitten des Icons im overlay.
+		 */
+		public function IconButton(imgPath:String, onComplete:Function, overlay:DisplayObject = null, centerIcon:Boolean = false ):void {
 			var bg:Rect;
-			
 			ico = new Image(imgPath, function() {
-				if (hitTest) {
-					addChild(hitTest);
-					if (centerHitTest) {
-						ico.x = hitTest.width / 2 - ico.width/2;
-						ico.y = hitTest.height / 2 - ico.height / 2;
-						hitTest.alpha = 0.0;
+				if (overlay) {
+					addChild(overlay);
+					if (centerIcon) {
+						ico.x = overlay.width / 2 - ico.width/2;
+						ico.y = overlay.height / 2 - ico.height / 2;
 					}
+					overlay.alpha = 0.0;
 				}
 				else {
 					bg = new Rect(ico.width, ico.height, 0x000000);
@@ -41,7 +43,6 @@ package com.kiko.ui.buttons
 					bg.alpha = 0.1;
 				}
 				onComplete();
-				
 			}, false);
 			addChild(ico);
 		}

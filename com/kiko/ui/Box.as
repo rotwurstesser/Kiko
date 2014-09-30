@@ -46,7 +46,7 @@
 		// data
 		private var contentElements:Number = 0;
 		private var contentHeight:Number = 0;
-		private var elementGap:Number = 10;
+		private var elementGap:Number = 8;
 		//
 		//
 		public function Box():void{
@@ -259,12 +259,23 @@
 			var s:Slider = new Slider(stage, text, minVal, maxVal, startVal, showValueLimits, 180);
 			content.addChild(s);
 			s.x = 10;
-			s.y = contentHeight;
+			s.y = contentHeight+1;
 			//s.width = this.width - 20;
 			contentElements ++;
 			contentHeight += s.height + elementGap;
 			addWhiteSpace();
 			return s;
+		}
+		public function addStepper(text:String, minVal:int, maxVal:int, startVal:int, stepVal:int = 1):Stepper {
+			removeWhiteSpace();
+			var sp:Stepper = new Stepper(text, minVal, maxVal, startVal, stepVal, 180);
+			content.addChild(sp);
+			sp.x = 10;
+			sp.y = contentHeight+1;
+			contentElements++;
+			contentHeight += sp.height + elementGap;
+			addWhiteSpace();
+			return sp;
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
