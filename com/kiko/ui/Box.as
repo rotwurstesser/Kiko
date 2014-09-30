@@ -1,12 +1,12 @@
 ﻿package com.kiko.ui
 {
 	/**
-	 * Version 1.03
+	 * Version 1.04
 	 * 
 	 * 
 	 * todo
-	 * - alle listeners mit weakReference erstellen
-	 * - korrekte Anordung der grabberButtons
+	 * - alle listeners mit weakReference versehen
+	 * - korrekte Anordung der grabberButtons OK
 	 * - schnelle dispose funktion
 	 */
 	// adobe
@@ -33,10 +33,12 @@
 		private var grabber:Grabber;
 		private var scrollContent:ScrollContent;
 		private var content:Sprite;
+		private var whiteSpace:Sprite;
 		private var format:TextFormat;
 		private var title_tf:TextField;
 		private var scroller_x:ScrollElement;
 		private var scroller_y:ScrollElement;
+		//
 		//
 		// flags
 		private var closed:Boolean;
@@ -69,7 +71,6 @@
 			addChild(bg);
 			
 			grabber = new Grabber();
-			grabber.numButtons = 0;
 			grabber.graphics.beginFill(0xffffff);
 			grabber.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE );
 			grabber.graphics.drawRect(0, 0, 200, 35);
@@ -83,7 +84,7 @@
 			var minimize:IconButton = addGrabberButton("resources/swf/minimize_icon.swf");
 			addGrabberButton("resources/swf/invisible_icon.swf");
 			//addGrabberButton("resources/swf/more_icon.swf");
-			addGrabberButton("resources/swf/test_icon.swf");
+			var more:IconButton = addGrabberButton("resources/swf/test_icon.swf");
 			
 			
 			
@@ -142,7 +143,7 @@
 			
 			
 			
-		
+			// button clicks
 			minimize.addEventListener(MouseEvent.CLICK, function() {
 				bg.visible = closed ? true : false;
 				content.visible = closed ? true : false;
@@ -154,6 +155,11 @@
 			var me:Box = this;
 			close.addEventListener(MouseEvent.CLICK, function() { 
 				me.parent.removeChild(me);
+			});
+			
+			more.addEventListener(MouseEvent.CLICK, function() {
+				width = Math.random() * 800;
+				height = Math.random() * 800;
 			});
 			
 			// dropshadow
@@ -189,15 +195,20 @@
 		public function addGrabberButton(icoPath:String):IconButton {
 			var but:IconButton = new IconButton(icoPath, function() {
 				addChild(but);
-				but.x = grabber.contentWidth;
-				grabber.contentWidth += but.width + 0;
+				var xpos:Number = grabber.startX;
+				for (var i:uint = 0; i < grabber.buttons.length; i++) {
+					var b:IconButton = grabber.buttons[i];
+					b.x = xpos;
+					xpos += b.width;
+				}
+				//but.x = grabber.contentWidth;
+				//grabber.contentWidth += but.width + 0;
 			}, new Rect(25,grabber.height,0xff00aa),true);
-			
-			
-			grabber.numButtons++;
-			//
 			but.buttonMode = true;
+			grabber.addButton(but);
+			//
 			
+			//
 			but.addEventListener(MouseEvent.MOUSE_OVER, function() { 
 				but.alpha = 0.5;
 			});
@@ -207,44 +218,59 @@
 			return but;
 		}
 		
-		public function addTextButton(text, color:uint = 0x656565) {
-		//textColor:uint = 0x656565, borderColor:uint = 0x9F9F9F, hoverColor:uint = 0x9F9F9F ):TextButton {
-			
-			var tb:TextButton = new TextButton(text, 180, 25, color, color, color );
+		public function addTextButton(text:String, color:uint = 0x656565):TextButton {
+			removeWhiteSpace();
+			var tb:TextButton;
+			if(color == 0x656565) tb = new TextButton(text, 180, 25, 0x656565, 0x9F9F9F, 0x9F9F9F );
+			else tb = new TextButton(text, 180, 25, color, color, color );
 			content.addChild(tb);
 			tb.x = 10;
 			tb.y = contentHeight+1;
 			contentElements ++;
 			contentHeight += tb.height + elementGap;
+			addWhiteSpace();
 			return tb;
 		}
 		public function addToggleButton(text, toggleColor):ToggleButton {
+			removeWhiteSpace();
 			var tg:ToggleButton = new ToggleButton(text);
 			content.addChild(tg);
 			tg.x = 10;
-			tg.y = contentHeight;
+			tg.y = contentHeight+1;
 			contentElements ++;
 			contentHeight += tg.height + elementGap;
+			addWhiteSpace();
 			return tg;
 		}
-		public function addSlider(text, minVal, maxVal, startVal):Slider {
+		public function addSlider(text:String, minVal:Number, maxVal:Number, startVal:Number):Slider {
+			removeWhiteSpace();
 			var s:Slider = new Slider(stage, text, minVal, maxVal, startVal, 180);
 			content.addChild(s);
 			s.x = 10;
 			s.y = contentHeight;
-			s.width = this.width - 20;
+			//s.width = this.width - 20;
 			contentElements ++;
 			contentHeight += s.height + elementGap;
+			addWhiteSpace();
 			return s;
 		}
-		public function addWhiteSpace():void {
-			var w:Sprite = new Sprite();
-			w.graphics.beginFill(0xff00aa, 0);
-			w.graphics.drawRect(0, 0, 100, 25);
-			content.addChild(w);
-			w.y = contentHeight;
-			contentElements ++;
-			contentHeight += w.height + elementGap;
+		
+		/**
+		 * Fügt einen Leerraum ganz am Schluss des Contents ein, um ein bisschen Weissraum zu erzeugen.
+		 */
+		private function addWhiteSpace():void {
+			whiteSpace = new Sprite();
+			whiteSpace.graphics.beginFill(0xff00aa, 0);
+			whiteSpace.graphics.drawRect(0, 0, 100, 25);
+			content.addChild(whiteSpace);
+			whiteSpace.y = contentHeight;
+			contentHeight += whiteSpace.height + elementGap;
+		}
+		private function removeWhiteSpace():void {
+			if (whiteSpace && content.contains(whiteSpace)) {
+				contentHeight -= whiteSpace.height + elementGap;
+				content.removeChild(whiteSpace);
+			}
 		}
 		
 		// getters  setters
@@ -266,8 +292,7 @@
 			scrollContent.displayWidth = value;
 			scroller_x.scrollBackgroundWidth = value;
 			scroller_x.scrollerXToMin();
-			scroller_y.x = value - scroller_y.width;
-			trace("k");	
+			scroller_y.x = value - scroller_y.scrollBackgroundWidth;
 		}
 		
 		override public function get height () : Number {
@@ -275,9 +300,8 @@
 		}
 		override public function set height (value:Number) : void {
 			bg.height = value;
-			scrollContent.displayHeight = value - grabber.height -10;
-			
-			scroller_y.scrollBackgroundHeight = value - grabber.height - 10;
+			scrollContent.displayHeight = value - grabber.height - 10;
+			scroller_y.scrollBackgroundHeight = value - grabber.height;
 			scroller_x.y = bg.height - scroller_x.scrollBackgroundHeight;
 		}
 		

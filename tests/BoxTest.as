@@ -2,8 +2,10 @@
 {
 	// adobe
 	import com.kiko.ui.buttons.IconButton;
+	import com.kiko.ui.Slider;
 	import flash.display.Sprite
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	//
 	// own
 	import com.kiko.display.*;
@@ -60,14 +62,23 @@
 			box.title = "MyBox";
 			box.height = 250;
 			box.width = 350;
-			box.addToggleButton("New", 0xff00aa);
-			box.addSlider("Drink Count", 50, 80, 50);
-		
-			box.addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			box.addTextButton("Notice", 0x4a55ff);
-			box.addTextButton("Alert Button", 0xff3443).width = 50
-			box.addTextButton("Standard Button", 0x656565);
+			var s:Slider = box.addSlider("Test Slider", 0, 100, 10);
+			box.addTextButton("Get Value", 0x83F52E).addEventListener(MouseEvent.CLICK, function() {
+				trace( s.value);
+			});
+			//box.addToggleButton("Test Toggler", 0xff00aa);
+			//box.addSlider("Drink Count", 50, 80, 50);
+			//box.addToggleButton("Toggle Checkbox", 0xd5ffa5);
+			//makeFor(10, function() { box.addTextButton("Notice", 0x4a55ff) } );
+			//makeFor(10, function() { box.addSlider("Drink Count", 50, 80, 50) } );
+			//box.addTextButton("Notice", 0x4a55ff);
+			//box.addTextButton("Alert Button", 0xff3443).width = 50
+			//box.addTextButton("Standard Button", 0x656565);
 			return box;
+		}
+		
+		private function makeFor(count:uint, func:Function) {
+			for (var i:uint = 0; i < count; i++) func();
 		}
 	}//end-class
 }//end-pack

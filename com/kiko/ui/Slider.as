@@ -23,7 +23,7 @@
 	public class Slider extends Sprite
 	{
 		// data
-		private var value:Number;
+		private var _value:Number;
 		//
 		// graphics
 		private var line:Sprite;
@@ -123,7 +123,6 @@
 				//trace(grabber.hasEventListener(Event.ENTER_FRAME));
 				//trace(value);
 			});
-
 		}
 		// privates
 		private function updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal):void {
@@ -131,7 +130,7 @@
 			active.graphics.lineStyle(1, 0x8ee800, 1, false, "normal", CapsStyle.SQUARE);
 			active.graphics.moveTo(0, 0);
 			active.graphics.lineTo(grabber.x, 0);
-			value = Math.round((grabber.x - 8) / (line.width - 16) * (maxVal - minVal) + minVal);
+			_value = Math.round((grabber.x - 8) / (line.width - 16) * (maxVal - minVal) + minVal);
 			valuetf.text = text + ": " +String(value);
 			valuetf.setTextFormat(format2);
 		}
@@ -142,7 +141,12 @@
 			maxtf.x = line.width - maxtf.width;
 			dragRect = new Rectangle(8, 25, line.width - 15, 0);
 		}
-
+		public function get value():Number {
+			return _value;
+		}
+		//public function set value(val:Number):void {
+			
+		//}
 		
 	}//end-class
 }//end-pack
