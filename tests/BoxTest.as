@@ -2,6 +2,7 @@
 {
 	// adobe
 	import com.kiko.ui.buttons.IconButton;
+	import com.kiko.ui.buttons.ToggleButton;
 	import com.kiko.ui.Slider;
 	import flash.display.Sprite
 	import flash.events.Event;
@@ -27,9 +28,14 @@
 			trace("test inited");
 			
 			for (var i:uint = 0; i < 10; i++) {
-				//createBox();
+				/*var a:Box = createBox();
+				a.active = true;
+				a.addEventListener(MouseEvent.CLICK, function(e:MouseEvent) {
+					(e.currentTarget as Box).active = true;
+				});*/
 			}
 			var b:Box = createBox();
+			//b.active = true;
 			
 			
 			addEventListener(Event.ENTER_FRAME, function() {
@@ -46,10 +52,6 @@
 			//m.loadImage( new IconButton("resources/swf/cross_icon.swf",
 			//addChild(m);
 			
-			var l:Image = new Image("resources/swf/cross_icon.swf", new Function());
-			addChild(l);
-			l.x = 100;
-			l.y = 100;
 		}
 
 		private function createBox():Box {
@@ -62,18 +64,28 @@
 			box.title = "MyBox";
 			box.height = 250;
 			box.width = 350;
-			var s:Slider = box.addSlider("Test Slider", 0, 100, 10);
+			box.addToggleButton("Super Toggler");
+			box.addToggleButton("Super Toggler");
+			box.addToggleButton("Super Toggler");
+			box.addToggleButton("Super Toggler");
+			var n:ToggleButton = box.addToggleButton("Super Toggler");
+			
+			box.addToggleButton("New Tester Toggler").addEventListener(MouseEvent.CLICK, function() {
+				trace(n.toggleOn);
+			});
+			/*
+			var s:Slider = box.addSlider("New", 10, 20, 14, false);
+			box.addSlider("Test Slider", 10, 20, 7);
+			box.addSlider("Test Slider", 10, 20, 12);
 			box.addTextButton("Get Value", 0x83F52E).addEventListener(MouseEvent.CLICK, function() {
 				trace( s.value);
 			});
-			//box.addToggleButton("Test Toggler", 0xff00aa);
-			//box.addSlider("Drink Count", 50, 80, 50);
-			//box.addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			//makeFor(10, function() { box.addTextButton("Notice", 0x4a55ff) } );
-			//makeFor(10, function() { box.addSlider("Drink Count", 50, 80, 50) } );
-			//box.addTextButton("Notice", 0x4a55ff);
-			//box.addTextButton("Alert Button", 0xff3443).width = 50
-			//box.addTextButton("Standard Button", 0x656565);
+			box.addToggleButton("Test Toggler", 0xff00aa);
+			box.addToggleButton("Toggle Checkbox", 0xd5ffa5);
+			box.addTextButton("Notice", 0x4a55ff);
+			box.addTextButton("Alert Button", 0xff3443).width = 50
+			box.addTextButton("Standard Button", 0x656565);
+			*/
 			return box;
 		}
 		

@@ -1,7 +1,7 @@
 package com.kiko.ui.buttons
 {
 	/**
-	 * Version 1.01
+	 * Version 1.02
 	 */
 	// adobe
 	import com.kiko.display.Image;
@@ -18,7 +18,7 @@ package com.kiko.ui.buttons
 	public class ToggleButton extends Sprite
 	{
 		// data
-		public var toggleOn:Boolean;
+		private var _toggleOn:Boolean;
 		//
 		// graphics
 		private var toggler:Sprite;
@@ -26,7 +26,7 @@ package com.kiko.ui.buttons
 		private var active_icon:Image;
 		//
 		//
-		public function ToggleButton(text:String, toggleColor:uint = 0x8ee800):void
+		public function ToggleButton(text:String):void
 		{
 			toggler = new Sprite();
 			toggler.graphics.beginFill(0x000000, 0);
@@ -37,7 +37,6 @@ package com.kiko.ui.buttons
 			
 			active = new Sprite();
 			active.graphics.lineStyle(1, 0xcccccc);
-			active.graphics.beginFill(toggleColor);
 			active.graphics.drawRoundRect(0, 0, 7, 7, 2, 2);
 			addChild(active);
 			active.x = toggler.width / 2 - active.width / 2;
@@ -85,15 +84,22 @@ package com.kiko.ui.buttons
 				
 			});
 			hit.addEventListener(MouseEvent.CLICK, function(e:MouseEvent) {
-				toggleOn = !toggleOn;
+				_toggleOn = !_toggleOn;
 				active_icon.visible = toggleOn ? true : false;
 				
 			});
 			
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// privates
 		private function drawToggler() {
 			toggler.graphics.drawRoundRect(0, 0, 16, 16, 4, 4);
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// getters setters
+		public function get toggleOn():Boolean {
+			return _toggleOn;
 		}
 		
 		

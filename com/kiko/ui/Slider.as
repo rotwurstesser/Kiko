@@ -1,7 +1,7 @@
 ﻿package com.kiko.ui
 {
 	/**
-	 * Version 1.03
+	 * Version 1.04
 	 */
 	// adobe
 	import com.kiko.display.Image;
@@ -34,8 +34,10 @@
 		private var dragRect:Rectangle;
 		//
 		//
-		public function Slider(stage:Stage, text:String, minVal:int, maxVal:int, startVal:int, width:uint ):void
+		public function Slider(stage:Stage, text:String, minVal:int, maxVal:int, startVal:int, showValueLimits:Boolean, width:uint ):void
 		{
+			if (startVal < minVal) startVal = minVal;
+			if (startVal > maxVal) startVal = maxVal;
 			
 			line = new Sprite();
 			line.graphics.lineStyle(1, 0x999999, 1, false, LineScaleMode.NONE, CapsStyle.SQUARE);
@@ -99,7 +101,7 @@
 			grabber.graphics.drawCircle(0, 0, 8);
 			addChild(grabber);
 			grabber.y = 25;
-			grabber.x = 8;
+			grabber.x = 8 + (startVal - minVal) / (maxVal - minVal) * (line.width - 16);
 			updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 			grabber.buttonMode = true;
 			dragRect = new Rectangle(8, 25, width - 15, 0);
@@ -118,11 +120,7 @@
 				updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal);
 			});
 			
-			//test loop
-			addEventListener(Event.ENTER_FRAME, function() {
-				//trace(grabber.hasEventListener(Event.ENTER_FRAME));
-				//trace(value);
-			});
+			this.valueLimits = showValueLimits;
 		}
 		// privates
 		private function updateGrabber(active, grabber, line, valuetf, text, format2, minVal, maxVal):void {
@@ -144,9 +142,13 @@
 		public function get value():Number {
 			return _value;
 		}
-		//public function set value(val:Number):void {
-			
-		//}
+		/**
+		 * Definiert, ob die Wert-Begrenzungs Textfelder angezeigt werden.
+		 */
+		public function set valueLimits(bool:Boolean):void {
+			this.mintf.visible = bool;
+			this.maxtf.visible = bool;
+		}
 		
 	}//end-class
 }//end-pack

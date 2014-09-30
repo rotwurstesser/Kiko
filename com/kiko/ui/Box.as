@@ -66,7 +66,7 @@
 		private function draw():void {
 			bg = new Sprite();
 			bg.graphics.beginFill(0xffffff);
-			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE, null);
+			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE, null, null);
 			bg.graphics.drawRect(0, 0, 200, 300);
 			addChild(bg);
 			
@@ -130,18 +130,10 @@
 			title_tf.x = bg.width - title_tf.width - 15;
 			title_tf.y = grabber.height / 2 - title_tf.height / 2;
 			
-			
+			// mouse wheel
 			addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
 				scroller_y.scrollerY -= e.delta*2.5;
 			});
-			
-			/* colors
-			 * blue: 0x4a55ff
-			 * 
-			 * 
-			 * */
-			
-			
 			
 			// button clicks
 			minimize.addEventListener(MouseEvent.CLICK, function() {
@@ -158,8 +150,8 @@
 			});
 			
 			more.addEventListener(MouseEvent.CLICK, function() {
-				width = Math.random() * 800;
-				height = Math.random() * 800;
+				width = content.width + 15;
+				height = content.height + 15;
 			});
 			
 			// dropshadow
@@ -171,6 +163,7 @@
 			
 		}
 		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// privates
 		private function eventListeners():void {
 			stage.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
@@ -189,72 +182,6 @@
 				}
 			});
 		}
-		
-		
-		//publics
-		public function addGrabberButton(icoPath:String):IconButton {
-			var but:IconButton = new IconButton(icoPath, function() {
-				addChild(but);
-				var xpos:Number = grabber.startX;
-				for (var i:uint = 0; i < grabber.buttons.length; i++) {
-					var b:IconButton = grabber.buttons[i];
-					b.x = xpos;
-					xpos += b.width;
-				}
-				//but.x = grabber.contentWidth;
-				//grabber.contentWidth += but.width + 0;
-			}, new Rect(25,grabber.height,0xff00aa),true);
-			but.buttonMode = true;
-			grabber.addButton(but);
-			//
-			
-			//
-			but.addEventListener(MouseEvent.MOUSE_OVER, function() { 
-				but.alpha = 0.5;
-			});
-			but.addEventListener(MouseEvent.MOUSE_OUT, function() { 
-				but.alpha = 1;
-			});
-			return but;
-		}
-		
-		public function addTextButton(text:String, color:uint = 0x656565):TextButton {
-			removeWhiteSpace();
-			var tb:TextButton;
-			if(color == 0x656565) tb = new TextButton(text, 180, 25, 0x656565, 0x9F9F9F, 0x9F9F9F );
-			else tb = new TextButton(text, 180, 25, color, color, color );
-			content.addChild(tb);
-			tb.x = 10;
-			tb.y = contentHeight+1;
-			contentElements ++;
-			contentHeight += tb.height + elementGap;
-			addWhiteSpace();
-			return tb;
-		}
-		public function addToggleButton(text, toggleColor):ToggleButton {
-			removeWhiteSpace();
-			var tg:ToggleButton = new ToggleButton(text);
-			content.addChild(tg);
-			tg.x = 10;
-			tg.y = contentHeight+1;
-			contentElements ++;
-			contentHeight += tg.height + elementGap;
-			addWhiteSpace();
-			return tg;
-		}
-		public function addSlider(text:String, minVal:Number, maxVal:Number, startVal:Number):Slider {
-			removeWhiteSpace();
-			var s:Slider = new Slider(stage, text, minVal, maxVal, startVal, 180);
-			content.addChild(s);
-			s.x = 10;
-			s.y = contentHeight;
-			//s.width = this.width - 20;
-			contentElements ++;
-			contentHeight += s.height + elementGap;
-			addWhiteSpace();
-			return s;
-		}
-		
 		/**
 		 * Fügt einen Leerraum ganz am Schluss des Contents ein, um ein bisschen Weissraum zu erzeugen.
 		 */
@@ -273,6 +200,74 @@
 			}
 		}
 		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//publics
+		public function addGrabberButton(icoPath:String):IconButton {
+			var but:IconButton = new IconButton(icoPath, function() {
+				addChild(but);
+				var xpos:Number = grabber.startX;
+				for (var i:uint = 0; i < grabber.buttons.length; i++) {
+					var b:IconButton = grabber.buttons[i];
+					b.x = xpos;
+					xpos += b.width;
+				}
+				//but.x = grabber.contentWidth;
+				//grabber.contentWidth += but.width + 0;
+			}, new Rect(25,grabber.height,0xff00aa),true);
+			but.buttonMode = true;
+			grabber.addButton(but);
+			//
+			but.addEventListener(MouseEvent.MOUSE_OVER, function() { 
+				but.alpha = 0.5;
+			});
+			but.addEventListener(MouseEvent.MOUSE_OUT, function() { 
+				but.alpha = 1;
+			});
+			return but;
+		}
+		/**
+		 * @param	text Button Text
+		 * @param	color Textfarbe, Randfarbe, Hoverfarbe. zB: 0x4a55ff
+		 * @return	Der erstellte TextButton
+		 */
+		public function addTextButton(text:String, color:uint = 0x656565):TextButton {
+			removeWhiteSpace();
+			var tb:TextButton;
+			if(color == 0x656565) tb = new TextButton(text, 180, 25, 0x656565, 0x9F9F9F, 0x9F9F9F );
+			else tb = new TextButton(text, 180, 25, color, color, color );
+			content.addChild(tb);
+			tb.x = 10;
+			tb.y = contentHeight+1;
+			contentElements ++;
+			contentHeight += tb.height + elementGap;
+			addWhiteSpace();
+			return tb;
+		}
+		public function addToggleButton(text:String):ToggleButton {
+			removeWhiteSpace();
+			var tg:ToggleButton = new ToggleButton(text);
+			content.addChild(tg);
+			tg.x = 10;
+			tg.y = contentHeight+1;
+			contentElements ++;
+			contentHeight += tg.height + elementGap;
+			addWhiteSpace();
+			return tg;
+		}
+		public function addSlider(text:String, minVal:Number, maxVal:Number, startVal:Number, showValueLimits:Boolean = true):Slider {
+			removeWhiteSpace();
+			var s:Slider = new Slider(stage, text, minVal, maxVal, startVal, showValueLimits, 180);
+			content.addChild(s);
+			s.x = 10;
+			s.y = contentHeight;
+			//s.width = this.width - 20;
+			contentElements ++;
+			contentHeight += s.height + elementGap;
+			addWhiteSpace();
+			return s;
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// getters  setters
 		public function set title(value:String):void {
 			this.title_tf.text = value;
@@ -281,7 +276,28 @@
 		public function get title():String {
 			return this.title_tf.text;
 		}
-		
+		public function set active(bool:Boolean):void {
+			var opacity:Number;
+			var dropshadow:DropShadowFilter;
+			var color:uint;
+			if (bool) {
+				opacity = 1;
+				dropshadow = new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3);
+				color = 0x999999;
+			}
+			else {
+				opacity = 0.2;
+				dropshadow = new DropShadowFilter(0, 0, 0, 0);
+				color = 0xD2D2D2;
+			}
+			for (var i:uint = 0; i < grabber.buttons.length; i++) {
+				grabber.buttons[i].alpha = opacity;
+			}
+			this.filters = [dropshadow];
+			content.alpha = opacity;
+			title_tf.textColor = color;
+			
+		}
 		override public function get width () : Number {
 			return bg.width;
 		}
@@ -292,7 +308,7 @@
 			scrollContent.displayWidth = value;
 			scroller_x.scrollBackgroundWidth = value;
 			scroller_x.scrollerXToMin();
-			scroller_y.x = value - scroller_y.scrollBackgroundWidth;
+			scroller_y.x = value - scroller_y.scrollBackgroundWidth -2;
 		}
 		
 		override public function get height () : Number {
