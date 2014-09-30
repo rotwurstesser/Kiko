@@ -140,37 +140,7 @@
 			 * 
 			 * */
 			
-			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			//addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			for (var i:uint = 0; i < 4; i++){
-			var c = Math.random() * 0xffffff;
-			var d = 0x4a55ff;
-			var e = 0xff3443;
-			var active = e;
-			addTextButton("Alert Button", active, active, active).width = 150;
-			//addSlider("Drink Count",  Math.random() * 10, Math.random() * 80000, 50);
-			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			}
-			addWhiteSpace();
-			//addTextButton("Notice", 0x4a55ff, 0x4a55ff, 0x4a55ff);
-			//addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			/*addSlider("Banana Count", 0, 9876, 10);
-			addSlider("Drink Count", 50, 200, 50);
-			addSlider("Drink Count", 50, 80, 50);
-			addSlider("Drink Count", 50, 80, 50);
-			addSlider("Drink Count", 50, 800, 50);
-			addTextButton("New Super", 0x656565, 0xcccccc, 0x9F9F9F);
-			addTextButton("New Super", 0xff3443, 0xff3443, 0xff3443);
-			addToggleButton("Toggle Checkbox", 0xd5ffa5);
-			addToggleButton("New", 0xff00aa);
-			addToggleButton("New", 0xff00aa);
-			addToggleButton("New", 0xff00aa);
-			addToggleButton("New", 0xff00aa);
-			addSlider("Drink Count", 50, 80, 50);
-			addToggleButton("Toggle Checkbox", 0xd5ffa5);*/
-			//addSlider("Drink Count", 50, 80);
-			//addSlider("Drink Count", 50, 80);
+			
 			
 		
 			minimize.addEventListener(MouseEvent.CLICK, function() {
@@ -236,8 +206,11 @@
 			});
 			return but;
 		}
-		public function addTextButton(text, textColor, borderColor, hoverColor ):TextButton {
-			var tb:TextButton = new TextButton(text, 180, 25, textColor, borderColor, hoverColor );
+		
+		public function addTextButton(text, color:uint = 0x656565) {
+		//textColor:uint = 0x656565, borderColor:uint = 0x9F9F9F, hoverColor:uint = 0x9F9F9F ):TextButton {
+			
+			var tb:TextButton = new TextButton(text, 180, 25, color, color, color );
 			content.addChild(tb);
 			tb.x = 10;
 			tb.y = contentHeight+1;
@@ -289,7 +262,7 @@
 		override public function set width (value:Number) : void {
 			bg.width = value;
 			grabber.width = value;
-			title_tf.x = value - title_tf.width;
+			title_tf.x = value - title_tf.width - 15;
 			scrollContent.displayWidth = value;
 			scroller_x.scrollBackgroundWidth = value;
 			scroller_x.scrollerXToMin();
