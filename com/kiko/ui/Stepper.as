@@ -1,7 +1,7 @@
 package com.kiko.ui
 {
 	/**
-	 * Version 1.01
+	 * Version 1.02
 	* todo:
 		 * kommastellige Zahlen unterstützen
 	 */
@@ -25,10 +25,12 @@ package com.kiko.ui
 	{
 		// data
 		private var _value:Number;
+		private var _text:String;
 		//
 		// graphics
 		private var bg:Sprite;
 		private var boundaryLine:Sprite;
+		private var format:TextFormat;
 		private var tf:TextField;
 		private var upButton:IconButton;
 		private var downButton:IconButton;
@@ -38,6 +40,8 @@ package com.kiko.ui
 		{
 			if (startVal < minVal) startVal = minVal;
 			if (startVal > maxVal) startVal = maxVal;
+			_value = startVal;
+			_text = text;
 			
 			bg = new Sprite();
 			bg.graphics.lineStyle(1, 0x999999, 1, false, LineScaleMode.NONE);
@@ -52,9 +56,9 @@ package com.kiko.ui
 			boundaryLine.x = bg.width - 40;
 			addChild(boundaryLine);
 			
-			var format:TextFormat = new TextFormat("Arial", 12, 0x656565);
+			format = new TextFormat("Arial", 12, 0x656565);
 			tf = new TextField();
-			tf.text = text;
+			tf.text = _text + ": " + _value;
 			addChild(tf);
 			tf.setTextFormat(format);
 			tf.autoSize = TextFieldAutoSize.LEFT;
@@ -63,26 +67,54 @@ package com.kiko.ui
 			tf.mouseEnabled = false;
 			tf.y = bg.height / 2 - tf.height / 2;
 			
-			upButton = new IconButton("resources/swf/minimize_icon.swf", function(){
+			upButton = new IconButton("resources/swf/up_icon.swf", function(){
 				addChild(upButton);
 				upButton.x = bg.width - upButton.width-1;
 				upButton.y = 0;
 			}, new Rect(40 - 1, 20, 0xff0000), true );
+			upButton.buttonMode = true;
+			upButton.addEventListener(MouseEvent.MOUSE_OVER, overButton);
+			upButton.addEventListener(MouseEvent.MOUSE_OUT, outButton);
+			upButton.addEventListener(MouseEvent.CLICK, function() {
+				value += 1;
+				value = _value;
+				trace(_value);
+			});
 			
 			downButton = new IconButton("resources/swf/down_icon.swf", function(){
 				addChild(downButton);
-				downButton.x = bg.width - upButton.width-1;
+				downButton.x = bg.width - downButton.width-1;
 				downButton.y = bg.height - downButton.height-1;
-			}, new Rect(40-1,20-1, 0xff0000), true );
+			}, new Rect(40 - 1, 20 - 1, 0xff0000), true );
+			downButton.buttonMode = true;
+			downButton.addEventListener(MouseEvent.MOUSE_OVER, overButton);
+			downButton.addEventListener(MouseEvent.MOUSE_OUT, outButton);
+			downButton.addEventListener(MouseEvent.CLICK, function() {
+				value -= 1;
+				value = _value;
+			});
 			
 		}
+		
+
 		// privates
+		private function overButton(e:MouseEvent):void {
+			(e.currentTarget as IconButton).alpha = 0.5;
+		}
+		private function outButton(e:MouseEvent):void {
+			(e.currentTarget as IconButton).alpha = 1;
+		}
 
 		// getters/setters
 		override public function set width (value:Number) : void {
 		}
 		public function get value():Number {
 			return _value;
+		}
+		public function set value(v:Number):void {
+			_value = v;
+			tf.text = _text + ": " + _value;
+			tf.setTextFormat(format);
 		}
 	
 		

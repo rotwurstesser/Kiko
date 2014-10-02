@@ -1,7 +1,7 @@
 ﻿package com.kiko.ui
 {
 	/**
-	 * Version 1.04
+	 * Version 1.05
 	 * 
 	 * 
 	 * todo
@@ -38,10 +38,17 @@
 		private var title_tf:TextField;
 		private var scroller_x:ScrollElement;
 		private var scroller_y:ScrollElement;
+		private var closeButton:IconButton;
+		private var minimizeButton:IconButton;
+		private var circleButton:IconButton;
+		private var colorCircle:Sprite;
+		private var moreButton:IconButton;
 		//
 		//
 		// flags
+		private var _active:Boolean = true;
 		private var closed:Boolean;
+		private var circleMode:Boolean;
 		//
 		// data
 		private var contentElements:Number = 0;
@@ -79,12 +86,25 @@
 				startDrag();
 			});
 			
+			colorCircle = new Sprite();
+			colorCircle.graphics.lineStyle(2, Math.random()*0xffffff);
+			colorCircle.graphics.beginFill(0xffffff);
+			colorCircle.graphics.drawCircle(0, 0, 7);
+			addChild(colorCircle);
+			colorCircle.visible = false;
+			colorCircle.buttonMode = true;
+			colorCircle.doubleClickEnabled = true;
+			colorCircle.addEventListener(MouseEvent.MOUSE_DOWN, function() {
+				colorCircle.startDrag();
+			});
+			colorCircle.addEventListener(MouseEvent.DOUBLE_CLICK, clickCircle);
+			
 			// grabber buttons
-			var close:IconButton = addGrabberButton("resources/swf/cross_icon.swf");
-			var minimize:IconButton = addGrabberButton("resources/swf/minimize_icon.swf");
-			addGrabberButton("resources/swf/invisible_icon.swf");
+			closeButton = addGrabberButton("resources/swf/cross_icon.swf");
+			//minimizeButton = addGrabberButton("resources/swf/minimize_icon.swf");
+			circleButton = addGrabberButton("resources/swf/invisible_icon.swf");
 			//addGrabberButton("resources/swf/more_icon.swf");
-			var more:IconButton = addGrabberButton("resources/swf/test_icon.swf");
+			moreButton = addGrabberButton("resources/swf/test_icon.swf");
 			
 			
 			
@@ -122,7 +142,7 @@
 			
 			format = new TextFormat("Arial", 12, 0x999999);
 			title_tf = new TextField();
-			title_tf.text = "Super Viewer";
+			title_tf.text = "New Box";
 			title_tf.setTextFormat(format);
 			title_tf.autoSize = TextFieldAutoSize.RIGHT;
 			title_tf.mouseEnabled = false;
@@ -136,22 +156,31 @@
 			});
 			
 			// button clicks
-			minimize.addEventListener(MouseEvent.CLICK, function() {
-				bg.visible = closed ? true : false;
-				content.visible = closed ? true : false;
-				scroller_y.visible = closed ? true : false;
-				scroller_x.visible = closed ? true : false;
+			/*minimizeButton.addEventListener(MouseEvent.CLICK, function() {
+				if (!circleMode) {
+				bg.visible = closed;
+				content.visible = closed;
+				scroller_y.visible = closed;
+				scroller_x.visible = closed;
 				closed = !closed;
-			});
+				}
+			});*/
 			
 			var me:Box = this;
-			close.addEventListener(MouseEvent.CLICK, function() { 
+			closeButton.addEventListener(MouseEvent.CLICK, function() { 
 				me.parent.removeChild(me);
 			});
 			
-			more.addEventListener(MouseEvent.CLICK, function() {
+			circleButton.addEventListener(MouseEvent.CLICK, clickCircle);
+			
+			moreButton.addEventListener(MouseEvent.CLICK, function() {
 				width = content.width + 15;
 				height = content.height + 15;
+			});
+			
+			// loop
+			addEventListener(Event.ENTER_FRAME, function() {
+				//circle.x = 0;
 			});
 			
 			// dropshadow
@@ -168,6 +197,7 @@
 		private function eventListeners():void {
 			stage.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
 				stopDrag();
+				colorCircle.stopDrag();
 			});
 			
 			var me = this;
@@ -176,7 +206,7 @@
 			});
 			
 			addEventListener(Event.ENTER_FRAME, function() {
-				if(!closed) {
+				if(!closed && !circleMode) {
 				scroller_x.visible = scroller_x.scrollerWidth >= scroller_x.scrollBackgroundWidth ? false : true;
 				scroller_y.visible = scroller_y.scrollerHeight >= scroller_y.scrollBackgroundHeight ? false : true;
 				}
@@ -200,9 +230,38 @@
 			}
 		}
 		
+		private function clickCircle(e:MouseEvent):void {
+			if(!closed){
+			grabber.visible = circleMode;
+			bg.visible = circleMode;
+			content.visible = circleMode;
+			scroller_x.visible = circleMode;
+			scroller_y.visible = circleMode;
+			title_tf.visible = circleMode;
+			for ( var i:uint = 0; i < grabber.buttons.length; i++) {
+				(grabber.buttons[i] as IconButton).visible = circleMode;
+			}
+			placeColorCirlce();
+			colorCircle.visible = !circleMode;
+			circleMode = !circleMode;
+			}
+		}
+		/**
+		 * Platziert den colorCircle an die Position des KreisIcons.
+		 */
+		private function placeColorCirlce():void {
+			colorCircle.x = circleButton.x + circleButton.width/2;
+			colorCircle.y = circleButton.y + circleButton.height/2;
+		}
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//publics
-		public function addGrabberButton(icoPath:String):IconButton {
+		/**
+		 * Fügt im Grabber einen neuen IconButton hinzu.
+		 * @param	icoPath Pfad zum Icon. (*.swf, *.jpg ...)
+		 * @return	Der erzeugte IconButton.
+		 */
+		public function addGrabberButton(icoPath:String ):IconButton {
 			var but:IconButton = new IconButton(icoPath, function() {
 				addChild(but);
 				var xpos:Number = grabber.startX;
@@ -211,17 +270,17 @@
 					b.x = xpos;
 					xpos += b.width;
 				}
-				//but.x = grabber.contentWidth;
-				//grabber.contentWidth += but.width + 0;
+				// align colorCircle
+				placeColorCirlce();
 			}, new Rect(25,grabber.height,0xff00aa),true);
 			but.buttonMode = true;
 			grabber.addButton(but);
 			//
-			but.addEventListener(MouseEvent.MOUSE_OVER, function() { 
-				but.alpha = 0.5;
+			but.addEventListener(MouseEvent.MOUSE_OVER, function() {
+				if(active) but.alpha = 0.5;
 			});
 			but.addEventListener(MouseEvent.MOUSE_OUT, function() { 
-				but.alpha = 1;
+				if(active) but.alpha = 1;
 			});
 			return but;
 		}
@@ -288,16 +347,20 @@
 			return this.title_tf.text;
 		}
 		public function set active(bool:Boolean):void {
+			_active = bool;
 			var opacity:Number;
+			var opacity2:Number;
 			var dropshadow:DropShadowFilter;
 			var color:uint;
 			if (bool) {
 				opacity = 1;
+				opacity2 = 1;
 				dropshadow = new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3);
 				color = 0x999999;
 			}
 			else {
 				opacity = 0.2;
+				opacity2 = 0.8;
 				dropshadow = new DropShadowFilter(0, 0, 0, 0);
 				color = 0xD2D2D2;
 			}
@@ -305,9 +368,17 @@
 				grabber.buttons[i].alpha = opacity;
 			}
 			this.filters = [dropshadow];
-			content.alpha = opacity;
-			title_tf.textColor = color;
-			
+			content.alpha = opacity2;
+			title_tf.textColor = color;	
+		}
+		public function get active():Boolean {
+			return _active;
+		}
+		public function set color(c:uint):void {
+			colorCircle.graphics.clear();
+			colorCircle.graphics.lineStyle(2, c);
+			colorCircle.graphics.beginFill(0xffffff);
+			colorCircle.graphics.drawCircle(0, 0, 7);
 		}
 		override public function get width () : Number {
 			return bg.width;
@@ -321,7 +392,6 @@
 			scroller_x.scrollerXToMin();
 			scroller_y.x = value - scroller_y.scrollBackgroundWidth -2;
 		}
-		
 		override public function get height () : Number {
 			return bg.height;
 		}
