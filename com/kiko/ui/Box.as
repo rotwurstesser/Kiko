@@ -14,8 +14,10 @@
 	import flash.display.SimpleButton;
 	import flash.display.LineScaleMode;
 	import flash.display.JointStyle;
+	import flash.filters.ColorMatrixFilter;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.BlurFilter;
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
@@ -54,6 +56,7 @@
 		private var contentElements:Number = 0;
 		private var contentHeight:Number = 0;
 		private var elementGap:Number = 8;
+		private var _color:uint;
 		//
 		//
 		public function Box():void{
@@ -104,7 +107,7 @@
 			//minimizeButton = addGrabberButton("resources/swf/minimize_icon.swf");
 			circleButton = addGrabberButton("resources/swf/invisible_icon.swf");
 			//addGrabberButton("resources/swf/more_icon.swf");
-			moreButton = addGrabberButton("resources/swf/test_icon.swf");
+			//moreButton = addGrabberButton("resources/swf/test_icon.swf");
 			
 			
 			
@@ -140,7 +143,7 @@
 			scrollContent.displayWidth = bg.width;
 			scrollContent.displayHeight = bg.height - grabber.height-10;
 			
-			format = new TextFormat("Arial", 12, 0x999999);
+			format = new TextFormat("Arial", 12, 0x555555, false); //blue: 0x4a55ff
 			title_tf = new TextField();
 			title_tf.text = "New Box";
 			title_tf.setTextFormat(format);
@@ -173,10 +176,10 @@
 			
 			circleButton.addEventListener(MouseEvent.CLICK, clickCircle);
 			
-			moreButton.addEventListener(MouseEvent.CLICK, function() {
+			/*moreButton.addEventListener(MouseEvent.CLICK, function() {
 				width = content.width + 15;
 				height = content.height + 15;
-			});
+			});*/
 			
 			// loop
 			addEventListener(Event.ENTER_FRAME, function() {
@@ -272,7 +275,7 @@
 				}
 				// align colorCircle
 				placeColorCirlce();
-			}, new Rect(25,grabber.height,0xff00aa),true);
+			},true, new Rect(25,grabber.height,0xff00aa));
 			but.buttonMode = true;
 			grabber.addButton(but);
 			//
@@ -286,7 +289,7 @@
 		}
 		/**
 		 * @param	text Button Text
-		 * @param	color Textfarbe, Randfarbe, Hoverfarbe. zB: 0x4a55ff
+		 * @param	color Textfarbe, Randfarbe und Hoverfarbe. zB: 0x4a55ff
 		 * @return	Der erstellte TextButton
 		 */
 		public function addTextButton(text:String, color:uint = 0x656565):TextButton {
@@ -346,39 +349,58 @@
 		public function get title():String {
 			return this.title_tf.text;
 		}
+		/**
+		 * @todo Aufräumen, definieren was alles aktiv ist und was nicht.
+		 */
 		public function set active(bool:Boolean):void {
 			_active = bool;
 			var opacity:Number;
 			var opacity2:Number;
+			var opacity3:Number;
 			var dropshadow:DropShadowFilter;
+			var blur:BlurFilter;
+			var rc:Number = 1/3, gc:Number = 1/3, bc:Number = 1/3;
+			var cmf:ColorMatrixFilter = new ColorMatrixFilter([rc, gc, bc, 0, 0, rc, gc, bc, 0, 0, rc, gc, bc, 0, 0, 0, 0, 0, 1, 0]);
 			var color:uint;
 			if (bool) {
 				opacity = 1;
 				opacity2 = 1;
-				dropshadow = new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3);
-				color = 0x999999;
+				opacity3 = 1;
+				dropshadow = new DropShadowFilter(0, 0, 0, 0.05, 18, 18, 2.5, 3);
+				blur = new BlurFilter(0, 0, 0);
+				color = this.color; //0x555555
+				//content.filters = [];
 			}
 			else {
 				opacity = 0.2;
-				opacity2 = 0.8;
-				dropshadow = new DropShadowFilter(0, 0, 0, 0);
-				color = 0xD2D2D2;
+				opacity2 = 0.5;
+				opacity3 = 0;
+				dropshadow = new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3);
+				blur = new BlurFilter(2, 2, 3);
+				color = 0x999999; //0xD2D2D2
+				//content.filters = [cmf];
 			}
 			for (var i:uint = 0; i < grabber.buttons.length; i++) {
 				grabber.buttons[i].alpha = opacity;
 			}
 			this.filters = [dropshadow];
-			content.alpha = opacity2;
+			//content.alpha = opacity2;
+			scroller_x.alpha = opacity3;
+			scroller_y.alpha = opacity3;
 			title_tf.textColor = color;	
 		}
 		public function get active():Boolean {
 			return _active;
 		}
 		public function set color(c:uint):void {
+			this._color = c;
 			colorCircle.graphics.clear();
 			colorCircle.graphics.lineStyle(2, c);
 			colorCircle.graphics.beginFill(0xffffff);
 			colorCircle.graphics.drawCircle(0, 0, 7);
+		}
+		public function get color():uint {
+			return _color;
 		}
 		override public function get width () : Number {
 			return bg.width;

@@ -1,7 +1,7 @@
 package com.kiko.ui.buttons
 {
 	/**
-	 * Version 1.03
+	 * Version 1.04
 	 */
 	// adobe
 	import com.kiko.display.Image;
@@ -18,15 +18,22 @@ package com.kiko.ui.buttons
 		public var toggleOn:Boolean;
 		//
 		// graphics
-		private var ico:Image;
+		public var ico:Image;
+		public var overlay:DisplayObject;
+		public var background:DisplayObject;
 		/**
+		 * 
 		 * @param	imgPath Pfad zum Icon (.swf, .jpg, .png ...)
 		 * @param	onComplete Funktion wenn fertig geladen.
-		 * @param	overlay Ein Objekt das über das Icon gelegt wird. Meistens ist es durchsichtig.
 		 * @param	centerIcon Einmitten des Icons im overlay.
+		 * @param	overlay Ein Objekt das über das Icon gelegt wird. Es wird automatisch unsichtbar gemacht und wird als Klickfläche gebraucht.
+		 * @param	background Ein Objekt das hinter das Icon gelegt wird.
 		 */
-		public function IconButton(imgPath:String, onComplete:Function, overlay:DisplayObject = null, centerIcon:Boolean = false ):void {
+		public function IconButton(imgPath:String, onComplete:Function, centerIcon:Boolean = false, overlay:DisplayObject = null, background:DisplayObject = null  ):void {
+			this.overlay = overlay;
+			this.background = background;
 			var bg:Rect;
+			var me:IconButton = this;
 			ico = new Image(imgPath, function() {
 				if (overlay) {
 					addChild(overlay);
@@ -41,6 +48,10 @@ package com.kiko.ui.buttons
 					addChild(bg);
 					setChildIndex(bg, 0);
 					bg.alpha = 0.1;
+				}
+				if (background) {
+					addChild(background);
+					me.setChildIndex(background, 0);
 				}
 				onComplete();
 			}, false);

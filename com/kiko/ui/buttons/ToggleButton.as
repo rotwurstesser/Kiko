@@ -47,7 +47,6 @@ package com.kiko.ui.buttons
 				active_icon.scaleX = active_icon.scaleY = 0.7;
 				active_icon.x = toggler.width / 2 - active_icon.width / 2;
 				active_icon.y = toggler.height / 2 - active_icon.height / 2;
-				
 			});
 			addChild(active_icon);
 			active_icon.visible = false;

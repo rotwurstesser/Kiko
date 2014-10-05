@@ -25,12 +25,10 @@
 			addEventListener(Event.ADDED_TO_STAGE, toStage);
 		}
 		
-		private function toStage(e:Event):void 
-		{
+		private function toStage(e:Event):void {
 			removeEventListener(Event.ADDED_TO_STAGE, toStage);
-			trace("test inited");
-			
-			for (var i:uint = 0; i < 2; i++) {
+			var numBoxes:uint = 5;
+			for (var i:uint = 0; i < numBoxes; i++) {
 				var a:Box = createBox();
 				a.active = false;
 				a.addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
@@ -41,33 +39,7 @@
 					}
 					(e.currentTarget as Box).active = true;
 				});
-				//colorCircle();
 			}
-			var b:Box = createBox();
-			//b.active = true;
-			
-			
-			addEventListener(Event.ENTER_FRAME, function() {
-				//b.height -= 1;
-			});
-			
-			multiImage();
-			
-			
-			
-			
-		}
-		
-		private function colorCircle():void 
-		{
-			var c:Sprite = new Sprite();
-			c.graphics.lineStyle(2, Math.random()*0xffffff);
-			c.graphics.beginFill(0xffffff);
-			c.graphics.drawCircle(0, 0, 7);
-			addChild(c);
-			c.x = Math.random() *500;
-			c.y = Math.random() *500;
-			c.filters = [new DropShadowFilter(0, 0, 0, 0.15, 10, 10, 1, 3)];
 		}
 		
 		private function multiImage():void 
@@ -75,7 +47,6 @@
 			//var m:MultiImage = new MultiImage();
 			//m.loadImage( new IconButton("resources/swf/cross_icon.swf",
 			//addChild(m);
-			
 		}
 
 		private function createBox():Box {
@@ -84,7 +55,7 @@
 			addChild(box);
 			box.x = Math.random()* 500;
 			box.y = Math.random() * 500;
-			box.color = 0xff3443;
+			box.color = Math.random() * 0xffffff;
 			//box.y = 100;
 			box.title = "MyBox";
 			//box.height = 250;
@@ -95,30 +66,68 @@
 			//box.addStepper("Super Test: 24", 0, 5, 2, 1);
 			//box.addTextButton("Text Button Size");
 			
-			makeFor( 1, function(){ box.addStepper("Test Stepper", 10, 100, 20, 1); });
+			/**
+			 * TextButtons mit mehrerern Farben.
+			 */
+			if( 1 ){
+			box.addTextButton("Standard");
+			box.addTextButton("Change Color", 0x4BCA00).addEventListener(MouseEvent.CLICK, function() {
+				box.color = Math.random() * 0xffffff;
+			});
+			box.addTextButton("Alert", 0xEE4A04);
+			box.addTextButton("Orange", 0xE4890E);
+			box.addTextButton("Pink", 0xDD1574);
+			box.addTextButton("Skyblue", 0x019DF1);
+			box.addTextButton("Blue", 0x0A5EE9);
+			}
 			
-			makeFor( 0, function() {
-				var r = Math.random() * 0xffffff;
-				var b = 0x4a55ff;
-				var a = 0xff3443;
-				box.addTextButton("Super Color", a).addEventListener(MouseEvent.CLICK, function(e:MouseEvent) {
-					trace( (e.currentTarget as TextButton).borderColor );
+			/**
+			 * Stepper, Slider, ToggleButton und TextButton.
+			 */
+			if( 0 ) {
+			makeFor( 5, function() { 
+			box.addStepper("Stepper Test", -5000, 580, Math.random()*(-5000, 580) -5000, 31);
+			box.addSlider("Apples", -500, 500, -100);
+			box.addToggleButton("Yes");
+			box.addTextButton("Super");
+			});
+			}
+			
+			/**
+			 * Mehrere TextButtons
+			 */
+			if( 0 ){
+				makeFor( 20, function() {
+					var r = Math.random() * 0xffffff;
+					var b = 0x4a55ff;
+					var a = 0xff3443;
+					box.addTextButton("Super Color", b	).addEventListener(MouseEvent.CLICK, function(e:MouseEvent) {
+						trace( (e.currentTarget as TextButton).borderColor );
+					} );
 				} );
-			} );
+			}
 			
-			/*
+			/**
+			 * Verschiedene Optionen: width, height, minVal, maxVal
+			 */
+			if( 0 ) {
 			var s:Slider = box.addSlider("New", 10, 20, 14, false);
 			box.addSlider("Test Slider", 10, 20, 7);
-			box.addSlider("Test Slider", 10, 20, 12);
+			box.addSlider("Test Slider", -100, 500, -50);
 			box.addTextButton("Get Value", 0x83F52E).addEventListener(MouseEvent.CLICK, function() {
 				trace( s.value);
 			});
-			box.addToggleButton("Test Toggler", 0xff00aa);
-			box.addToggleButton("Toggle Checkbox", 0xd5ffa5);
+			box.addToggleButton("Test Toggler");
+			box.addToggleButton("Toggle Checkbox");
 			box.addTextButton("Notice", 0x4a55ff);
 			box.addTextButton("Alert Button", 0xff3443).width = 50
-			box.addTextButton("Standard Button", 0x656565);
-			*/
+			box.addTextButton("Standard Button", 0x656565).height = 40;
+			}
+			
+			if ( 0 ) {
+				box.addStepper("Stepper", -9999, 99999, 100, 58);
+			}
+			
 			return box;
 		}
 		
