@@ -1,13 +1,13 @@
 ﻿package com.kiko.ui
 {
 	/**
-	 * Version 1.05
+	 * Version 1.06
 	 * 
 	 * 
-	 * todo
+	 * @todo
 	 * - alle listeners mit weakReference versehen
-	 * - korrekte Anordung der grabberButtons OK
 	 * - schnelle dispose funktion
+	 * - BoxManager der die active boxes verwaltet.
 	 */
 	// adobe
 	import flash.display.Sprite;
@@ -19,9 +19,12 @@
 	import flash.events.MouseEvent;
 	import flash.filters.BlurFilter;
 	import flash.filters.DropShadowFilter;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFieldAutoSize;
+	import flash.ui.Mouse;
 	//
 	// own
 	import com.kiko.display.*;
@@ -45,18 +48,22 @@
 		private var circleButton:IconButton;
 		private var colorCircle:Sprite;
 		private var moreButton:IconButton;
+		private var resizer:Image;
 		//
 		//
 		// flags
 		private var _active:Boolean = true;
 		private var closed:Boolean;
 		private var circleMode:Boolean;
+		private var resizing:String;
 		//
 		// data
 		private var contentElements:Number = 0;
 		private var contentHeight:Number = 0;
 		private var elementGap:Number = 8;
 		private var _color:uint;
+		private var resize_area:Number = 5;
+		private var positions:Positions = new Positions();
 		//
 		//
 		public function Box():void{
@@ -68,12 +75,14 @@
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, toStage);
 			draw();
-			eventListeners();
+			initListeners();
 		}
 		
 		
 		
 		private function draw():void {
+			var self:Box = this;
+
 			bg = new Sprite();
 			bg.graphics.beginFill(0xffffff);
 			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE, null, null);
@@ -109,7 +118,10 @@
 			//addGrabberButton("resources/swf/more_icon.swf");
 			//moreButton = addGrabberButton("resources/swf/test_icon.swf");
 			
-			
+			resizer = new Image("resources/swf/arrow_icon.swf", function() {
+			},true);
+			self.addChild(resizer);
+			resizer.visible = false;
 			
 			scroller_y = new ScrollElement(stage, 0xffffff,0xcccccc);
 			addChild(scroller_y);
@@ -158,6 +170,9 @@
 				scroller_y.scrollerY -= e.delta*2.5;
 			});
 			
+			/**
+			 * @temp Unbestimmt, ob benötigt
+			 */
 			// button clicks
 			/*minimizeButton.addEventListener(MouseEvent.CLICK, function() {
 				if (!circleMode) {
@@ -169,9 +184,14 @@
 				}
 			});*/
 			
-			var me:Box = this;
-			closeButton.addEventListener(MouseEvent.CLICK, function() { 
-				me.parent.removeChild(me);
+			/**
+			 * @todo dispose Funktion einbauen zum entfernen von Listeneren und Referenzen.
+			 */
+			closeButton.addEventListener(MouseEvent.CLICK, function() {
+				if(hasEventListener(Event.ENTER_FRAME)) removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				if(stage.hasEventListener(MouseEvent.MOUSE_DOWN)) stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
+				if (stage.hasEventListener(MouseEvent.MOUSE_UP)) stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
+				self.parent.removeChild(self);
 			});
 			
 			circleButton.addEventListener(MouseEvent.CLICK, clickCircle);
@@ -181,10 +201,6 @@
 				height = content.height + 15;
 			});*/
 			
-			// loop
-			addEventListener(Event.ENTER_FRAME, function() {
-				//circle.x = 0;
-			});
 			
 			// dropshadow
 			this.filters = [new DropShadowFilter(0, 0, 0, 0.05, 10, 10, 1, 3)];
@@ -192,27 +208,20 @@
 			// display list
 			this.setChildIndex(scroller_x, numChildren - 1);
 			this.setChildIndex(scroller_y, numChildren - 1);
+			this.setChildIndex(resizer, numChildren - 1);
 			
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// privates
-		private function eventListeners():void {
+		private function initListeners():void {
+			var self:Box = this;
 			stage.addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
 				stopDrag();
 				colorCircle.stopDrag();
 			});
-			
-			var me = this;
 			this.addEventListener(MouseEvent.MOUSE_DOWN, function() {
-				parent.setChildIndex(me, parent.numChildren - 1);
-			});
-			
-			addEventListener(Event.ENTER_FRAME, function() {
-				if(!closed && !circleMode) {
-				scroller_x.visible = scroller_x.scrollerWidth >= scroller_x.scrollBackgroundWidth ? false : true;
-				scroller_y.visible = scroller_y.scrollerHeight >= scroller_y.scrollBackgroundHeight ? false : true;
-				}
+				parent.setChildIndex(self, parent.numChildren - 1);
 			});
 		}
 		/**
@@ -255,6 +264,111 @@
 		private function placeColorCirlce():void {
 			colorCircle.x = circleButton.x + circleButton.width/2;
 			colorCircle.y = circleButton.y + circleButton.height/2;
+		}
+		private function onEnterFrame(e:Event):void {
+			// scrollbar visibility
+			if(!closed && !circleMode) {
+			scroller_x.visible = scroller_x.scrollerWidth >= scroller_x.scrollBackgroundWidth ? false : true;
+			scroller_y.visible = scroller_y.scrollerHeight >= scroller_y.scrollBackgroundHeight ? false : true;
+			}
+			
+			//resize areas
+			var a:Number = resize_area;
+			positions.a_left = new Rectangle(this.x - a, this.y, a * 2, this.height - 2*a);
+			positions.a_right = new Rectangle(this.x + this.width, this.y, a * 2, this.height - 2*a);
+			positions.a_bottom = new Rectangle(this.x + 2*a, this.y + this.height - a, this.width - 4*a, a * 2);
+			positions.a_bottom_left = new Rectangle(this.x -a*2, this.y + this.height -a*2, a * 4, a * 4);
+			positions.a_bottom_right = new Rectangle(this.x + this.width -a*2, this.y + this.height -a*2, 4 * a, 4 * a);
+			var s:Point = new Point(stage.mouseX, stage.mouseY);
+			
+			//resizer visibility
+			if (positions.a_right.containsPoint(s) || 
+			positions.a_left.containsPoint(s) ||
+			positions.a_bottom.containsPoint(s) ||
+			positions.a_bottom_left.containsPoint(s) ||
+			positions.a_bottom_right.containsPoint(s) ) {
+				resizer.x = mouseX;
+				resizer.y = mouseY;
+				resizer.visible = true;
+				Mouse.hide();
+				if(!resizing) {
+					if (positions.a_bottom_right.containsPoint(s)) {
+						resizer.rotation = 45;
+					}
+					else if (positions.a_bottom_left.containsPoint(s)) {
+						resizer.rotation = -45;
+					}
+					else if (positions.a_left.containsPoint(s) || positions.a_right.containsPoint(s)) {
+						resizer.rotation = 0;
+					}
+					else if (positions.a_bottom.containsPoint(s)) {
+						resizer.rotation = 90;
+					}
+				}
+			}
+			else {
+				resizer.visible = false;
+				Mouse.show();
+			}
+			
+			//resizing
+			if (resizing) {
+				resizer.x = mouseX;
+				resizer.y = mouseY;
+				resizer.visible = true;
+				Mouse.hide();
+				if (resizing == "left")	{
+					this.x = Math.min(stage.mouseX);
+					this.width = positions.rightEdgeX - stage.mouseX;
+				}
+				else if (resizing == "right") {
+					this.width = stage.mouseX - this.x;
+				}
+				else if (resizing == "bottom") {
+					this.height = mouseY;
+				}
+				else if (resizing == "bottom_right") {
+					this.width = mouseX;
+					this.height = mouseY;
+				}
+				else if (resizing == "bottom_left") {
+					this.x = stage.mouseX;
+					this.width = positions.rightEdgeX - stage.mouseX;
+					this.height = mouseY;
+				}
+			}
+			
+		}
+		private function stageMouseDown(e:MouseEvent):void {
+			var s:Point = new Point(stage.mouseX, stage.mouseY);
+			if 	(positions.a_right.containsPoint(s)) 	resizing = "right";
+			else if (positions.a_left.containsPoint(s)) resizing = "left";
+			else if (positions.a_bottom.containsPoint(s)) resizing = "bottom";
+			else if (positions.a_bottom_left.containsPoint(s)) resizing = "bottom_left";
+			else if (positions.a_bottom_right.containsPoint(s)) resizing = "bottom_right";
+			else resizing = "";
+			positions.rightEdgeX = this.x + this.width;
+			positions.leftEdgeX = this.x;
+			
+			
+			/**
+			 * @debug Visualisierungen der resize areas
+			 */
+			if (0){
+			var os:Array = [positions.a_bottom_left, positions.a_bottom_right, positions.a_bottom, positions.a_left, positions.a_right];
+			for (var i:uint = 0; i < os.length; i++) {
+				var o:Rectangle = os[i];
+				var r:Rect = new Rect(o.width, o.height, 0xff00aa);
+				addChild(r);
+				var p:Point = globalToLocal( new Point(o.left, o.top));
+				r.x = p.x;
+				r.y = p.y;
+				r.alpha = 0.3;
+			}
+			}
+		}
+		private function stageMouseUp(e:MouseEvent):void {
+			resizing = "";
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,6 +484,9 @@
 				blur = new BlurFilter(0, 0, 0);
 				color = this.color; //0x555555
 				//content.filters = [];
+				addEventListener(Event.ENTER_FRAME, onEnterFrame);
+				stage.addEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
+				stage.addEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
 			}
 			else {
 				opacity = 0.2;
@@ -379,6 +496,9 @@
 				blur = new BlurFilter(2, 2, 3);
 				color = 0x999999; //0xD2D2D2
 				//content.filters = [cmf];
+				if(hasEventListener(Event.ENTER_FRAME)) removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				if(stage.hasEventListener(MouseEvent.MOUSE_DOWN)) stage.removeEventListener(MouseEvent.MOUSE_DOWN, stageMouseDown);
+				if (stage.hasEventListener(MouseEvent.MOUSE_UP)) stage.removeEventListener(MouseEvent.MOUSE_UP, stageMouseUp);
 			}
 			for (var i:uint = 0; i < grabber.buttons.length; i++) {
 				grabber.buttons[i].alpha = opacity;
@@ -398,6 +518,7 @@
 			colorCircle.graphics.lineStyle(2, c);
 			colorCircle.graphics.beginFill(0xffffff);
 			colorCircle.graphics.drawCircle(0, 0, 7);
+			title_tf.textColor = color;	
 		}
 		public function get color():uint {
 			return _color;
@@ -406,10 +527,14 @@
 			return bg.width;
 		}
 		override public function set width (value:Number) : void {
+			/**
+			 * @temp 120 = minWidth
+			 */
+			value = Math.max(120, value);
 			bg.width = value;
 			grabber.width = value;
 			title_tf.x = value - title_tf.width - 15;
-			scrollContent.displayWidth = value;
+			scrollContent.displayWidth = value - 10;
 			scroller_x.scrollBackgroundWidth = value;
 			scroller_x.scrollerXToMin();
 			scroller_y.x = value - scroller_y.scrollBackgroundWidth -2;
@@ -418,6 +543,10 @@
 			return bg.height;
 		}
 		override public function set height (value:Number) : void {
+			/**
+			 * @temp 60 = minHeight
+			 */
+			value = Math.max(60, value);
 			bg.height = value;
 			scrollContent.displayHeight = value - grabber.height - 10;
 			scroller_y.scrollBackgroundHeight = value - grabber.height;
@@ -425,4 +554,16 @@
 		}
 		
 	}//end-class
-}//end-pack
+}//end - pack
+//
+import flash.geom.Rectangle;
+dynamic class Positions {
+	public var a_left:Rectangle = new Rectangle();
+	public var a_right:Rectangle = new Rectangle();
+	public var a_bottom:Rectangle = new Rectangle();
+	public var a_bottom_left:Rectangle = new Rectangle();
+	public var a_bottom_right:Rectangle = new Rectangle();
+	//
+	public var rightEdgeX:Number;
+	public var leftEdgeX:Number;
+}

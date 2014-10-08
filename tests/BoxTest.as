@@ -70,7 +70,9 @@
 			 * TextButtons mit mehrerern Farben.
 			 */
 			if( 1 ){
-			box.addTextButton("Standard");
+			box.addTextButton("Create Box").addEventListener(MouseEvent.CLICK, function() {
+				createBox();
+			});
 			box.addTextButton("Change Color", 0x4BCA00).addEventListener(MouseEvent.CLICK, function() {
 				box.color = Math.random() * 0xffffff;
 			});
@@ -124,7 +126,7 @@
 			box.addTextButton("Standard Button", 0x656565).height = 40;
 			}
 			
-			if ( 0 ) {
+			if ( 1 ) {
 				box.addStepper("Stepper", -9999, 99999, 100, 58);
 			}
 			
