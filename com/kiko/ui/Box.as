@@ -14,6 +14,7 @@
 	import flash.display.SimpleButton;
 	import flash.display.LineScaleMode;
 	import flash.display.JointStyle;
+	import flash.display.CapsStyle;
 	import flash.filters.ColorMatrixFilter;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -62,7 +63,7 @@
 		private var contentHeight:Number = 0;
 		private var elementGap:Number = 8;
 		private var _color:uint;
-		private var resize_area:Number = 5;
+		private var resize_area:Number = 5; // std:5
 		private var positions:Positions = new Positions();
 		//
 		//
@@ -82,10 +83,9 @@
 		
 		private function draw():void {
 			var self:Box = this;
-
 			bg = new Sprite();
-			bg.graphics.beginFill(0xffffff);
-			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NONE, null, null);
+			bg.graphics.beginFill(0xffffff);//0xffffff
+			bg.graphics.lineStyle(1, 0xdedede, 1, false, LineScaleMode.NORMAL, null, JointStyle.MITER); //0xdedede
 			bg.graphics.drawRect(0, 0, 200, 300);
 			addChild(bg);
 			
@@ -276,7 +276,7 @@
 			var a:Number = resize_area;
 			positions.a_left = new Rectangle(this.x - a, this.y, a * 2, this.height - 2*a);
 			positions.a_right = new Rectangle(this.x + this.width, this.y, a * 2, this.height - 2*a);
-			positions.a_bottom = new Rectangle(this.x + 2*a, this.y + this.height - a, this.width - 4*a, a * 2);
+			positions.a_bottom = new Rectangle(this.x + 2*a, this.y + this.height, this.width - 4*a, a * 2);
 			positions.a_bottom_left = new Rectangle(this.x -a*2, this.y + this.height -a*2, a * 4, a * 4);
 			positions.a_bottom_right = new Rectangle(this.x + this.width -a*2, this.y + this.height -a*2, 4 * a, 4 * a);
 			var s:Point = new Point(stage.mouseX, stage.mouseY);
@@ -534,10 +534,10 @@
 			bg.width = value;
 			grabber.width = value;
 			title_tf.x = value - title_tf.width - 15;
-			scrollContent.displayWidth = value - 10;
+			scrollContent.displayWidth = value - 8;
 			scroller_x.scrollBackgroundWidth = value;
 			scroller_x.scrollerXToMin();
-			scroller_y.x = value - scroller_y.scrollBackgroundWidth -2;
+			scroller_y.x = value - scroller_y.scrollBackgroundWidth-2;
 		}
 		override public function get height () : Number {
 			return bg.height;
